@@ -163,12 +163,13 @@ body.is-profile .home{display:none}
 .theme:focus-visible{outline:3px solid var(--yel);outline-offset:3px}
 .theme::before{content:"";box-sizing:border-box;position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:var(--yel);border:1.5px solid var(--ink);transition:transform .25s ease}
 .theme[aria-checked="true"]::before{transform:translateX(100%)}
-.theme span{position:relative;z-index:1;padding:5px 10px;white-space:nowrap;text-align:center;transition:color .2s}
+.theme .w{display:none}
+.theme span{position:relative;z-index:1;padding:5px 11px;white-space:nowrap;text-align:center;transition:color .2s}
 .theme[aria-checked="false"] .tl,.theme[aria-checked="true"] .td{color:#17140f}
 @media(max-width:560px){.theme .w{display:none}.theme span{padding:5px 9px}}
 @media(max-width:560px){
   header.top{align-items:flex-start;flex-wrap:wrap;gap:12px 10px}
-  .hactions{flex-direction:column-reverse;flex-wrap:nowrap;align-items:flex-end;gap:10px;flex:none;margin-left:auto}
+  .hactions{flex-direction:column;flex-wrap:nowrap;align-items:flex-end;gap:10px;flex:none;margin-left:auto}
   .logo{flex:none;font-size:.95rem;padding-top:8px;white-space:nowrap}
   header.top .btn{font-size:.76rem;padding:8px 10px;white-space:nowrap}
 }
@@ -186,11 +187,11 @@ body.is-profile .home{display:none}
   <header class="top">
     <div class="logo">Unemployed<b>.</b>Staff</div>
     <div class="hactions">
+      <a class="btn y" id="joinTop" href="#">Rejoindre l’annuaire</a>
       <button type="button" class="theme" id="themeSwitch" role="switch" aria-checked="false" aria-label="Apparence sombre" title="Changer d’apparence">
         <span class="tl" aria-hidden="true">☀️<span class="w"> Claire</span></span>
         <span class="td" aria-hidden="true">🌙<span class="w"> Sombre</span></span>
       </button>
-      <a class="btn y" id="joinTop" href="#">Rejoindre l’annuaire</a>
     </div>
   </header>
 
