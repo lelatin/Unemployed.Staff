@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Unemployed Staff - L’annuaire des freelances</title>
+<script>
+(function(){try{var t=localStorage.getItem("us-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
+</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
 <style>
 :root{
@@ -153,6 +156,17 @@ body.is-profile .home{display:none}
 .nl{color:inherit;text-decoration:none}.nl:hover{text-decoration:underline}
 .login{color:inherit;text-decoration:underline}
 @media(max-width:640px){.pcard{flex-direction:column}.pavatar{width:140px;height:140px;font-size:3rem}}
+/* ===== Switch apparence claire / sombre ===== */
+.hactions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.theme{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;align-items:center;padding:3px;border-radius:999px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:3px 3px 0 var(--hard);cursor:pointer;font:inherit;font-weight:600;font-size:.74rem;line-height:1.2;transition:.15s}
+.theme:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--hard)}
+.theme:focus-visible{outline:3px solid var(--yel);outline-offset:3px}
+.theme::before{content:"";box-sizing:border-box;position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:var(--yel);border:1.5px solid var(--ink);transition:transform .25s ease}
+.theme[aria-checked="true"]::before{transform:translateX(100%)}
+.theme span{position:relative;z-index:1;padding:5px 10px;white-space:nowrap;text-align:center;transition:color .2s}
+.theme[aria-checked="false"] .tl,.theme[aria-checked="true"] .td{color:#17140f}
+@media(max-width:560px){.theme .w{display:none}.theme span{padding:5px 9px}}
+@media (prefers-reduced-motion:reduce){.theme,.theme::before,.theme span{transition:none}}
 </style>
 </head>
 <body>
@@ -165,7 +179,13 @@ body.is-profile .home{display:none}
 <div class="page">
   <header class="top">
     <div class="logo">Unemployed<b>.</b>Staff</div>
-    <a class="btn y" id="joinTop" href="#">Rejoindre l’annuaire</a>
+    <div class="hactions">
+      <button type="button" class="theme" id="themeSwitch" role="switch" aria-checked="false" aria-label="Apparence sombre" title="Changer d’apparence">
+        <span class="tl" aria-hidden="true">☀️<span class="w"> Claire</span></span>
+        <span class="td" aria-hidden="true">🌙<span class="w"> Sombre</span></span>
+      </button>
+      <a class="btn y" id="joinTop" href="#">Rejoindre l’annuaire</a>
+    </div>
   </header>
 
   <div class="home" id="home">
@@ -374,6 +394,31 @@ async function load(){
 }
 window.addEventListener("hashchange", route);
 load();
+</script>
+<script>
+/* ====== Apparence claire / sombre ====== */
+(function(){
+  var root=document.documentElement, sw=document.getElementById("themeSwitch");
+  if(!sw) return;
+  function apply(t){
+    root.setAttribute("data-theme",t);
+    sw.setAttribute("aria-checked", t==="dark" ? "true":"false");
+    sw.setAttribute("aria-label", t==="dark" ? "Apparence sombre (activée) — passer en apparence claire" : "Apparence claire (activée) — passer en apparence sombre");
+  }
+  apply(root.getAttribute("data-theme")==="dark" ? "dark":"light");
+  sw.addEventListener("click",function(){
+    var t=root.getAttribute("data-theme")==="dark" ? "light":"dark";
+    apply(t);
+    try{localStorage.setItem("us-theme",t)}catch(e){}
+  });
+  try{
+    var mq=matchMedia("(prefers-color-scheme: dark)");
+    mq.addEventListener("change",function(e){
+      var saved=null; try{saved=localStorage.getItem("us-theme")}catch(x){}
+      if(!saved) apply(e.matches?"dark":"light");
+    });
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
