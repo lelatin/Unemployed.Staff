@@ -174,6 +174,20 @@ body.is-profile .home{display:none}
   header.top .btn{font-size:.85rem;padding:9px 13px;white-space:nowrap}
 }
 @media (prefers-reduced-motion:reduce){.theme,.theme::before,.theme span{transition:none}}
+/* ===== Bouton flottant Buy Me a Coffee ===== */
+.page{padding-bottom:64px}
+.bmcwrap{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;opacity:0;transform:translateY(28px) scale(.9);pointer-events:none;transition:opacity .4s ease,transform .6s cubic-bezier(.2,1.5,.4,1)}
+.bmcwrap.show{opacity:1;transform:none;pointer-events:auto}
+.bmc{display:inline-flex;align-items:center;gap:9px;padding:11px 18px 11px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--yel);color:#17140f;text-decoration:none;font-weight:800;font-size:.95rem;letter-spacing:-.01em;white-space:nowrap;box-shadow:4px 4px 0 var(--hard);transform:rotate(-2deg);transition:transform .15s,box-shadow .15s,background .15s}
+.bmc:hover{transform:rotate(0) translate(-2px,-3px);box-shadow:6px 7px 0 var(--hard);background:var(--accent)}
+.bmc:active{transform:rotate(0) translate(1px,1px);box-shadow:2px 2px 0 var(--hard)}
+.bmc:focus-visible,.bmcx:focus-visible{outline:3px solid var(--cream);outline-offset:3px}
+.bmc .cup{display:inline-block;font-size:1.25rem;line-height:1;transform-origin:50% 85%;animation:cupwiggle 6s ease-in-out 3s infinite}
+@keyframes cupwiggle{0%,84%,100%{transform:rotate(0)}87%{transform:rotate(-16deg)}90%{transform:rotate(14deg)}93%{transform:rotate(-9deg)}96%{transform:rotate(5deg)}}
+.bmcx{position:absolute;top:-9px;left:-9px;width:24px;height:24px;padding:0;border-radius:50%;border:2px solid var(--ink);background:var(--paper);color:var(--ink);font:inherit;font-size:.72rem;font-weight:800;line-height:1;cursor:pointer;box-shadow:2px 2px 0 var(--hard);display:grid;place-items:center}
+.bmcx:hover{background:var(--accent);color:#17140f}
+@media(max-width:520px){.bmc{padding:10px 15px 10px 12px;font-size:.88rem}}
+@media (prefers-reduced-motion:reduce){.bmcwrap{transition:opacity .2s}.bmc .cup{animation:none}.bmc,.bmc:hover{transition:none}}
 </style>
 </head>
 <body>
@@ -259,6 +273,11 @@ body.is-profile .home{display:none}
       <p class="note" id="jnote"></p>
     </div>
   </dialog>
+</div>
+
+<div class="bmcwrap" id="bmcWrap">
+  <a class="bmc" href="https://buymeacoffee.com/unemployed.staff" target="_blank" rel="noopener noreferrer" aria-label="Offre-nous un café (Buy Me a Coffee, nouvel onglet)"><span class="cup" aria-hidden="true">☕</span><span>Offre-nous un café</span></a>
+  <button type="button" class="bmcx" id="bmcClose" aria-label="Masquer le bouton">✕</button>
 </div>
 
 <script>
@@ -425,6 +444,21 @@ load();
       if(!saved) apply(e.matches?"dark":"light");
     });
   }catch(e){}
+})();
+</script>
+<script>
+/* ====== Bouton flottant Buy Me a Coffee ====== */
+(function(){
+  var w=document.getElementById("bmcWrap"), x=document.getElementById("bmcClose");
+  if(!w) return;
+  var gone=false; try{gone=sessionStorage.getItem("us-bmc")==="0"}catch(e){}
+  if(gone){w.remove();return}
+  setTimeout(function(){w.classList.add("show")},2200);
+  x.addEventListener("click",function(){
+    w.classList.remove("show");
+    try{sessionStorage.setItem("us-bmc","0")}catch(e){}
+    setTimeout(function(){w.remove()},500);
+  });
 })();
 </script>
 </body>
