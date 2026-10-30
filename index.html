@@ -335,7 +335,7 @@ $("jf").addEventListener("submit", e => {
 });
 /* ===== PAGES PERSO (une page par freelance, adresse #profil-prenom-nom) ===== */
 const baseOf = p => "profil-" + ((p.name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || "x");
-function slugFor(p){ const b = baseOf(p), i = PROFILES.indexOf(p); let n = 0; for (let j = 0; j < i; j++) if (baseOf(PROFILES[j]) === b) n++; return n ? b + "-" + (n+1) : b; }
+function slugFor(p){ if (p._slug) return p._slug; const b = baseOf(p), i = PROFILES.indexOf(p); let n = 0; for (let j = 0; j < i; j++) if (baseOf(PROFILES[j]) === b) n++; return n ? b + "-" + (n+1) : b; }
 function showProfile(p){
   const k = byName(p.role);
   const av = p.photo ? '<img class="pavatar" src="'+esc(p.photo)+'" alt="">' : '<div class="pavatar" style="background:'+k.c+'">'+esc(initials(p.name))+'</div>';
@@ -360,6 +360,11 @@ async function load(){
     const r = await fetch("profiles.json", {cache:"no-store"});
     if (!r.ok) throw new Error(r.status);
     PROFILES = await r.json();
+    PROFILES.forEach(p => { p._slug = slugFor(p); });          // adresses figées avant le mélange
+    for (let i = PROFILES.length - 1; i > 0; i--) {              // ordre aléatoire à chaque ouverture
+      const j = Math.floor(Math.random() * (i + 1));
+      [PROFILES[i], PROFILES[j]] = [PROFILES[j], PROFILES[i]];
+    }
   } catch (e) {
     $("count").textContent = "";
     $("grid").innerHTML = '<div class="empty">Impossible de charger profiles.json. En local, ouvre le site via un petit serveur (le navigateur bloque la lecture de fichiers directement) ou sur GitHub Pages.</div>';
