@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Léa Marchand",
+    "role": "Designer graphique",
+    "city": "Montpellier",
+    "tags": [
+      "Branding",
+      "Illustrator",
+      "Packaging"
+    ],
+    "dispo": true,
+    "bio": "Designer indépendante, je crée des identités visuelles et des packagings pour des marques locales et des petites structures.",
+    "email": "",
+    "site": "",
+    "instagram": "https://www.instagram.com/",
+    "behance": "https://www.behance.net/",
+    "linkedin": "https://www.linkedin.com/",
+    "photo": ""
+  },
+  {
+    "name": "Tom Reyes",
+    "role": "Photographe",
+    "city": "Lyon",
+    "tags": [
+      "Portrait",
+      "Événementiel",
+      "Lightroom"
+    ],
+    "dispo": true,
+    "bio": "Photographe portrait et événementiel. J’aime les images naturelles, la lumière du jour et les gens qui ne posent pas.",
+    "email": "",
+    "site": "",
+    "instagram": "https://www.instagram.com/",
+    "behance": "https://www.behance.net/",
+    "linkedin": "https://www.linkedin.com/",
+    "photo": ""
+  },
+  {
+    "name": "Inès Boulanger",
+    "role": "Cadreur-monteur",
+    "city": "Paris",
+    "tags": [
+      "Premiere Pro",
+      "After Effects",
+      "Reels"
+    ],
+    "dispo": false,
+    "bio": "Cadreuse-monteuse spécialisée dans les formats courts pour les réseaux et les vidéos de marque.",
+    "email": "",
+    "site": "",
+    "instagram": "https://www.instagram.com/",
+    "behance": "https://www.behance.net/",
+    "linkedin": "https://www.linkedin.com/",
+    "photo": ""
+  },
+  {
+    "name": "Karim Haddad",
+    "role": "Social media manager",
+    "city": "Marseille",
+    "tags": [
+      "TikTok",
+      "Stratégie",
+      "Reporting"
+    ],
+    "dispo": true,
+    "bio": "Je construis des stratégies de contenu sur TikTok et Instagram, avec un reporting simple et lisible.",
+    "email": "",
+    "site": "",
+    "instagram": "https://www.instagram.com/",
+    "behance": "https://www.behance.net/",
+    "linkedin": "https://www.linkedin.com/",
+    "photo": ""
+  },
+  {
+    "name": "Camille Vidal",
+    "role": "Community manager",
+    "city": "Toulouse",
+    "tags": [
+      "Discord",
+      "Modération",
+      "Gaming"
+    ],
+    "dispo": true,
+    "bio": "Community manager gaming : animation de serveurs Discord, modération et événements communautaires.",
+    "email": "",
+    "site": "",
+    "instagram": "https://www.instagram.com/",
+    "behance": "https://www.behance.net/",
+    "linkedin": "https://www.linkedin.com/",
+    "photo": ""
+  },
+  {
+    "name": "Julie Perrin",
+    "role": "Chargé de communication",
+    "city": "Angers",
+    "tags": [
+      "Com’ interne",
+      "Newsletter",
+      "B2B"
+    ],
+    "dispo": true,
+    "bio": "Chargée de communication en environnement technique et B2B : plans de com’, newsletters et communication interne.",
+    "email": "",
+    "site": "",
+    "instagram": "https://www.instagram.com/",
+    "behance": "https://www.behance.net/",
+    "linkedin": "https://www.linkedin.com/",
+    "photo": ""
+  },
+  {
+    "name": "Maxime Roche",
+    "role": "Développeur web",
+    "city": "Remote",
+    "tags": [
+      "Webflow",
+      "JavaScript",
+      "SEO"
+    ],
+    "dispo": false,
+    "bio": "Développeur web freelance : sites vitrines rapides, propres et bien référencés.",
+    "email": "",
+    "site": "",
+    "instagram": "https://www.instagram.com/",
+    "behance": "https://www.behance.net/",
+    "linkedin": "https://www.linkedin.com/",
+    "photo": ""
+  },
+  {
+    "name": "Sarah Benali",
+    "role": "Designer graphique",
+    "city": "Bordeaux",
+    "tags": [
+      "UI",
+      "Figma",
+      "Motion"
+    ],
+    "dispo": true,
+    "bio": "Designer UI et motion, je dessine des interfaces claires et un peu joueuses.",
+    "email": "",
+    "site": "",
+    "instagram": "https://www.instagram.com/",
+    "behance": "https://www.behance.net/",
+    "linkedin": "https://www.linkedin.com/",
+    "photo": ""
+  }
+]
