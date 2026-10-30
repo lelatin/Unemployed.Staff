@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Unemployed Staff — L’annuaire des freelances</title>
+<title>Unemployed Staff - L’annuaire des freelances</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
 <style>
 :root{
@@ -138,6 +138,21 @@ details p{margin:8px 0 0;color:var(--muted)}
 .cta .btn{margin:4px}
 footer{padding:10px 0 34px;font-size:.85rem;opacity:.8;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 @media(max-width:480px){.avatar{width:74px;height:74px;font-size:1.5rem}.card{padding:11px;gap:12px}}
+
+body.is-profile .home{display:none}
+#profile[hidden]{display:none}
+#profile{padding:24px 0 10px}
+.back{margin-bottom:20px}
+.pcard{display:flex;gap:26px;align-items:flex-start;background:var(--paper);color:var(--ink);border:2px solid var(--ink);border-radius:28px;padding:26px;box-shadow:8px 8px 0 var(--hard)}
+.pavatar{flex:none;width:200px;height:200px;border-radius:24px;border:2px solid var(--ink);display:grid;place-items:center;font-size:4rem;font-weight:800;color:#17140f;object-fit:cover}
+.pinfo{min-width:0;flex:1}
+.pinfo h1{margin:0;font-size:clamp(2rem,6vw,3.4rem);letter-spacing:-.04em;line-height:1;font-weight:800}
+.pinfo .role{font-size:1.1rem;margin:6px 0}
+.bio{margin:14px 0;font-size:1.02rem;max-width:60ch}
+.pinfo .actions{margin-top:6px}
+.nl{color:inherit;text-decoration:none}.nl:hover{text-decoration:underline}
+.login{color:inherit;text-decoration:underline}
+@media(max-width:640px){.pcard{flex-direction:column}.pavatar{width:140px;height:140px;font-size:3rem}}
 </style>
 </head>
 <body>
@@ -153,10 +168,11 @@ footer{padding:10px 0 34px;font-size:.85rem;opacity:.8;display:flex;justify-cont
     <a class="btn y" id="joinTop" href="#">Rejoindre l’annuaire</a>
   </header>
 
+  <div class="home" id="home">
   <section class="hero">
     <div class="stamp">CUTTING MAT · 30 CM</div>
     <h1>Des freelances <mark>dispos</mark>.<br>Du talent <mark class="y">à la pelle.</mark></h1>
-    <div class="about"><b>Unemployed Staff, c’est quoi ?</b> Un annuaire de freelances né entre potes. Beaucoup de talents, peu de vitrine : voici donc l’annuaire pour les trouver et leur écrire.</div>
+    <div class="about"><b>C’est quoi, Unemployed Staff ?</b> Un annuaire né entre potes freelances. Beaucoup de talents, peu de vitrine : voici donc l’annuaire pour les trouver et leur écrire.</div>
     <a class="btn o" href="#annuaire">Voir les profils ↓</a>
   </section>
 
@@ -190,7 +206,9 @@ footer{padding:10px 0 34px;font-size:.85rem;opacity:.8;display:flex;justify-cont
     <a class="btn y" id="joinBtn" href="#">Je suis freelance, je rejoins</a>
   </section>
 
-  <footer><span>© Unemployed Staff</span><span>Fait par la communauté, pour la communauté.</span></footer>
+  </div>
+  <div id="profile" hidden></div>
+  <footer><span>© Unemployed Staff</span><span><a class="login" href="mentions-legales.html">Mentions légales</a> · <a class="login" href="donnees-personnelles.html">Données personnelles</a></span><span>Fait par la communauté, pour la communauté.</span></footer>
 
   <dialog class="modal" id="joinDlg" aria-labelledby="jt">
     <button class="mx" id="jx" type="button" aria-label="Fermer">✕</button>
@@ -232,23 +250,8 @@ const CATEGORIES = [
 
 const CITIES = ["Paris","Lyon","Marseille","Toulouse","Montpellier","Bordeaux","Nantes","Lille","Nice","Strasbourg","Rennes","Angers","Remote"];
 
-/* Réseaux (facultatifs) : ajoute instagram:"https://…", behance:"https://…", linkedin:"https://…" dans un profil.
-   Ajouter / retirer un profil = ajouter / retirer un bloc.
-   Photo : photo:"data:image/jpeg;base64,..." (les images distantes sont bloquées). */
-const PROFILES = [
-  {name:"Léa Marchand", role:"Designer graphique", city:"Montpellier", tags:["Branding","Illustrator","Packaging"], dispo:true, email:""},
-  {name:"Tom Reyes", role:"Photographe", city:"Lyon", tags:["Portrait","Événementiel","Lightroom"], dispo:true, email:""},
-  {name:"Inès Boulanger", role:"Cadreur-monteur", city:"Paris", tags:["Premiere Pro","After Effects","Reels"], dispo:false, email:""},
-  {name:"Karim Haddad", role:"Social media manager", city:"Marseille", tags:["TikTok","Stratégie","Reporting"], dispo:true, email:""},
-  {name:"Camille Vidal", role:"Community manager", city:"Toulouse", tags:["Discord","Modération","Gaming"], dispo:true, email:""},
-  {name:"Julie Perrin", role:"Chargé de communication", city:"Angers", tags:["Com’ interne","Newsletter","B2B"], dispo:true, email:""},
-  {name:"Maxime Roche", role:"Développeur web", city:"Remote", tags:["Webflow","JavaScript","SEO"], dispo:false, email:""},
-  {name:"Sarah Benali", role:"Designer graphique", city:"Bordeaux", tags:["UI","Figma","Motion"], dispo:true, email:""}
-];
-/* ======================== */
-
-/* DÉMO : liens génériques, à supprimer quand tu mets les vrais liens dans chaque profil */
-PROFILES.forEach(p=>{p.instagram=p.instagram||"https://www.instagram.com/";p.behance=p.behance||"https://www.behance.net/";p.linkedin=p.linkedin||"https://www.linkedin.com/";});
+/* Les profils sont dans profiles.json (même dossier que ce fichier). */
+let PROFILES = [];
 const SOCS = [["instagram","Instagram","IG"],["behance","Behance","Bē"],["linkedin","LinkedIn","in"]];
 const $ = id => document.getElementById(id);
 let cat = "Tous", city = "Toutes";
@@ -296,7 +299,7 @@ function render(){
     const av = p.photo ? '<img class="avatar" src="'+p.photo+'" alt="">'
       : '<div class="avatar" style="background:'+k.c+'">'+esc(initials(p.name))+'</div>';
     return '<article class="card" style="--r:'+(((i%3)-1)*0.7)+'deg">'+av+
-      '<div class="info"><h3 class="name">'+esc(p.name)+'</h3>'+
+      '<div class="info"><h3 class="name"><a class="nl" href="#'+slugFor(p)+'">'+esc(p.name)+'</a></h3>'+
       '<div class="role">'+k.e+' '+esc(p.role)+'</div>'+
       '<div class="meta"><span>📍 '+esc(p.city)+'</span><span><i class="dot" style="background:'+(p.dispo?'var(--ok)':'var(--muted)')+'"></i>'+(p.dispo?'Disponible':'Indisponible')+'</span></div>'+
       '<div class="tags">'+p.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div>'+
@@ -305,9 +308,11 @@ function render(){
   }).join("") : '<div class="empty">Rien de ce côté-là… essaie un autre mot-clé ou une autre catégorie.</div>';
 }
 $("q").addEventListener("input", render);
-const sugg = new Set(CATEGORIES.map(c=>c.name).concat(CITIES));
-PROFILES.forEach(p => p.tags.forEach(t => sugg.add(t)));
-$("sugg").innerHTML = Array.from(sugg).map(v => '<option value="'+esc(v)+'">').join("");
+function buildSugg(){
+  const sugg = new Set(CATEGORIES.map(c=>c.name).concat(CITIES));
+  PROFILES.forEach(p => (p.tags||[]).forEach(t => sugg.add(t)));
+  $("sugg").innerHTML = Array.from(sugg).map(v => '<option value="'+esc(v)+'">').join("");
+}
 const dlg = $("joinDlg");
 $("jrole").innerHTML = CATEGORIES.map(c => '<option>'+esc(c.name)+'</option>').join("") + '<option>Autre</option>';
 $("jnote").textContent = "Ton application mail s’ouvre avec tout pré-rempli. Pense à joindre une photo de toi. Rien ne s’ouvre ? Écris-nous à " + EMAIL + ".";
@@ -328,7 +333,42 @@ $("jf").addEventListener("submit", e => {
   a.href = mail("Rejoindre l’annuaire : "+prof.name).replace(/\?subject=.*/, "") + "?subject=" + encodeURIComponent("Rejoindre l’annuaire : "+prof.name) + "&body=" + encodeURIComponent(body);
   document.body.appendChild(a); a.click(); a.remove(); dlg.close(); e.target.reset();
 });
-render();
+/* ===== PAGES PERSO (une page par freelance, adresse #profil-prenom-nom) ===== */
+const baseOf = p => "profil-" + ((p.name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || "x");
+function slugFor(p){ const b = baseOf(p), i = PROFILES.indexOf(p); let n = 0; for (let j = 0; j < i; j++) if (baseOf(PROFILES[j]) === b) n++; return n ? b + "-" + (n+1) : b; }
+function showProfile(p){
+  const k = byName(p.role);
+  const av = p.photo ? '<img class="pavatar" src="'+esc(p.photo)+'" alt="">' : '<div class="pavatar" style="background:'+k.c+'">'+esc(initials(p.name))+'</div>';
+  const site = (p.site && /^https?:/i.test(p.site)) ? '<a class="btn y" href="'+esc(p.site)+'" target="_blank" rel="noopener noreferrer">Portfolio ↗</a>' : "";
+  $("profile").innerHTML = '<a class="btn back" href="#annuaire">← Tous les profils</a>' +
+    '<article class="pcard">'+av+'<div class="pinfo"><h1>'+esc(p.name)+'</h1><div class="role">'+k.e+' '+esc(p.role)+'</div>'+
+    '<div class="meta"><span>📍 '+esc(p.city)+'</span><span><i class="dot" style="background:'+(p.dispo?'var(--ok)':'var(--muted)')+'"></i>'+(p.dispo?'Disponible':'Indisponible')+'</span></div>'+
+    '<p class="bio">'+esc(p.bio || "Ce profil n’a pas encore de présentation.")+'</p>'+
+    '<div class="tags">'+(p.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div>'+
+    '<div class="actions"><a class="btn o" href="'+mail("Prise de contact : "+p.name+" (via Unemployed Staff)", p.email)+'">Contacter →</a>'+site+
+    SOCS.filter(s=>p[s[0]]).map(s=>'<a class="soc '+s[0]+'" href="'+esc(p[s[0]])+'" target="_blank" rel="noopener noreferrer" aria-label="'+s[1]+'" title="'+s[1]+'">'+s[2]+'</a>').join("")+'</div></div></article>';
+  document.title = p.name + " — Unemployed Staff";
+}
+function route(){
+  const h = location.hash.slice(1), p = h.indexOf("profil-") === 0 ? PROFILES.find(x => slugFor(x) === h) : null;
+  document.body.classList.toggle("is-profile", !!p); $("profile").hidden = !p;
+  if (p) { showProfile(p); window.scrollTo(0,0); }
+  else { document.title = "Unemployed Staff — L’annuaire des freelances"; if (h === "annuaire") setTimeout(() => $("annuaire").scrollIntoView(), 0); }
+}
+async function load(){
+  try {
+    const r = await fetch("profiles.json", {cache:"no-store"});
+    if (!r.ok) throw new Error(r.status);
+    PROFILES = await r.json();
+  } catch (e) {
+    $("count").textContent = "";
+    $("grid").innerHTML = '<div class="empty">Impossible de charger profiles.json. En local, ouvre le site via un petit serveur (le navigateur bloque la lecture de fichiers directement) ou sur GitHub Pages.</div>';
+    return;
+  }
+  buildSugg(); render(); route();
+}
+window.addEventListener("hashchange", route);
+load();
 </script>
 </body>
 </html>
