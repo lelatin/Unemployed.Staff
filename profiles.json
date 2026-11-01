@@ -27,7 +27,7 @@
       "Lightroom"
     ],
     "dispo": true,
-    "bio": "Photographe portrait et événementiel. J’aime les images naturelles, la lumière du jour et les gens qui ne posent pas.",
+    "bio": "Photographe portrait et événementiel. J'aime les images naturelles, la lumière du jour et les gens qui ne posent pas.",
     "email": "",
     "site": "",
     "instagram": "https://www.instagram.com/",
@@ -94,12 +94,12 @@
     "role": "Chargé de communication",
     "city": "Angers",
     "tags": [
-      "Com’ interne",
+      "Com' interne",
       "Newsletter",
       "B2B"
     ],
     "dispo": true,
-    "bio": "Chargée de communication en environnement technique et B2B : plans de com’, newsletters et communication interne.",
+    "bio": "Chargée de communication en environnement technique et B2B : plans de com', newsletters et communication interne.",
     "email": "",
     "site": "",
     "instagram": "https://www.instagram.com/",
@@ -142,5 +142,20 @@
     "behance": "https://www.behance.net/",
     "linkedin": "https://www.linkedin.com/",
     "photo": ""
-  }
-]
+  },
+  {
+    "name": "Anthony Peyronin",
+    "role": "Designer graphique",
+    "city": "Montpellier",
+    "tags": [
+      "Illustrator",
+      "Indesign",
+      "Branding"
+    ],
+    "dispo": true,
+    "bio": "",
+    "email": "anthony.peyronin@icloud.com",
+    "site": "",
+    "instagram": "https://www.instagram.com/studio.lelatin/",
+    "behance": "https://www.behance.net/anthonypey8ce5",
+    "linkedin": "https://www.linkedin.com/in/anthonypeyron
