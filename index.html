@@ -227,10 +227,10 @@ body.is-profile .home{display:none}
   <h2 class="t" id="annuaire">L’annuaire</h2>
   <div class="tools">
     <input class="search" id="q" type="search" placeholder="Un métier, un outil, une ville…" aria-label="Recherche" list="sugg" autocomplete="off"><datalist id="sugg"></datalist>
-    
-    
-    
-    
+    <div class="chips" id="chips"></div>
+    <p class="hint" id="hint"></p>
+    <div class="rowlabel">Villes</div>
+    <div class="chips" id="cities"></div>
   </div>
   <div class="count"><span id="count"></span><span class="legend"><i class="dot"></i>= disponible pour une mission</span></div>
   <div class="grid" id="grid"></div>
@@ -329,9 +329,6 @@ function renderCities(){
     '<button class="chip'+(c===city?' on':'')+'" data-c="'+esc(c)+'">'+(c==="Toutes"?"🌍 Toutes les villes":esc(c))+'</button>').join("");
   $("cities").querySelectorAll(".chip").forEach(b => b.onclick = () => { city = b.dataset.c; renderCities(); render(); });
   fitRow($("cities"));
-  
-  
-  
 }
 
 function render(){
@@ -346,120 +343,4 @@ function render(){
       : '<div class="avatar" style="background:'+k.c+'">'+esc(initials(p.name))+'</div>';
     return '<article class="card" style="--r:'+(((i%3)-1)*0.7)+'deg">'+av+
       '<div class="info"><h3 class="name"><a class="nl" href="#'+slugFor(p)+'">'+esc(p.name)+'</a></h3>'+
-      '<div class="role">'+k.e+' '+esc(p.role)+'</div>'+
-      '<div class="meta"><span>📍 '+esc(p.city)+'</span><span><i class="dot" style="background:'+(p.dispo?'var(--ok)':'var(--muted)')+'"></i>'+(p.dispo?'Disponible':'Indisponible')+'</span></div>'+
-      '<div class="tags">'+p.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div>'+
-      '<div class="actions"><a class="btn o" href="'+mail("Prise de contact : "+p.name+" (via Unemployed Staff)", p.email)+'">Contacter →</a>'+
-      SOCS.filter(s=>p[s[0]]).map(s=>'<a class="soc '+s[0]+'" href="'+esc(p[s[0]])+'" target="_blank" rel="noopener noreferrer" aria-label="'+s[1]+' de '+esc(p.name)+'" title="'+s[1]+'">'+s[2]+'</a>').join("")+'</div></div></article>';
-  }).join("") : '<div class="empty">Rien de ce côté-là… essaie un autre mot-clé ou une autre catégorie.</div>';
-}
-$("q").addEventListener("input", render);
-function buildSugg(){
-  const sugg = new Set(CATEGORIES.map(c=>c.name).concat(CITIES));
-  PROFILES.forEach(p => (p.tags||[]).forEach(t => sugg.add(t)));
-  $("sugg").innerHTML = Array.from(sugg).map(v => '<option value="'+esc(v)+'">').join("");
-}
-const dlg = $("joinDlg");
-$("jrole").innerHTML = CATEGORIES.map(c => '<option>'+esc(c.name)+'</option>').join("") + '<option>Autre</option>';
-$("jnote").textContent = "Ton application mail s’ouvre avec tout pré-rempli. Pense à joindre une photo de toi. Rien ne s’ouvre ? Écris-nous à " + EMAIL + ".";
-$("joinTop").onclick = $("joinBtn").onclick = e => { e.preventDefault(); dlg.showModal(); };
-$("jx").onclick = () => dlg.close();
-dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
-const net = (v,base) => { v = (v||"").trim(); if(!v) return ""; return v.toLowerCase().startsWith("http") ? v : base + v.replace(/^@/,""); };
-$("jf").addEventListener("submit", e => {
-  e.preventDefault();
-  const d = Object.fromEntries(new FormData(e.target));
-  const prof = {name:d.name.trim(), role:d.role, city:d.city.trim(), tags:d.tags.split(",").map(t=>t.trim()).filter(Boolean).slice(0,5), dispo:d.dispo==="oui", email:d.email.trim(), instagram:net(d.instagram,"https://www.instagram.com/"), behance:net(d.behance,"https://www.behance.net/"), linkedin:net(d.linkedin,"https://www.linkedin.com/in/")};
-  const body = ["Demande pour rejoindre l’annuaire Unemployed Staff","",
-    "Nom : "+prof.name, "Métier : "+prof.role, "Ville : "+prof.city, "Compétences : "+prof.tags.join(", "),
-    "Disponibilité : "+(prof.dispo?"Disponible":"Pas pour l’instant"), "Email : "+prof.email, "Site : "+(d.site||"—"),
-    "Instagram : "+(prof.instagram||"—"), "Behance : "+(prof.behance||"—"), "LinkedIn : "+(prof.linkedin||"—"),
-    "Message : "+(d.msg||"—"), "", "--- Fiche prête à ajouter (pour l’admin) ---", JSON.stringify(prof)+",", "", "(Photo en pièce jointe)"].join("\n");
-  const a = document.createElement("a");
-  a.href = mail("Rejoindre l’annuaire : "+prof.name).replace(/\?subject=.*/, "") + "?subject=" + encodeURIComponent("Rejoindre l’annuaire : "+prof.name) + "&body=" + encodeURIComponent(body);
-  document.body.appendChild(a); a.click(); a.remove(); dlg.close(); e.target.reset();
-});
-/* ===== PAGES PERSO (une page par freelance, adresse #profil-prenom-nom) ===== */
-const baseOf = p => "profil-" + ((p.name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || "x");
-function slugFor(p){ if (p._slug) return p._slug; const b = baseOf(p), i = PROFILES.indexOf(p); let n = 0; for (let j = 0; j < i; j++) if (baseOf(PROFILES[j]) === b) n++; return n ? b + "-" + (n+1) : b; }
-function showProfile(p){
-  const k = byName(p.role);
-  const av = p.photo ? '<img class="pavatar" src="'+esc(p.photo)+'" alt="">' : '<div class="pavatar" style="background:'+k.c+'">'+esc(initials(p.name))+'</div>';
-  const site = (p.site && /^https?:/i.test(p.site)) ? '<a class="btn y" href="'+esc(p.site)+'" target="_blank" rel="noopener noreferrer">Portfolio ↗</a>' : "";
-  $("profile").innerHTML = '<a class="btn back" href="#annuaire">← Tous les profils</a>' +
-    '<article class="pcard">'+av+'<div class="pinfo"><h1>'+esc(p.name)+'</h1><div class="role">'+k.e+' '+esc(p.role)+'</div>'+
-    '<div class="meta"><span>📍 '+esc(p.city)+'</span><span><i class="dot" style="background:'+(p.dispo?'var(--ok)':'var(--muted)')+'"></i>'+(p.dispo?'Disponible':'Indisponible')+'</span></div>'+
-    '<p class="bio">'+esc(p.bio || "Ce profil n’a pas encore de présentation.")+'</p>'+
-    '<div class="tags">'+(p.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div>'+
-    '<div class="actions"><a class="btn o" href="'+mail("Prise de contact : "+p.name+" (via Unemployed Staff)", p.email)+'">Contacter →</a>'+site+
-    SOCS.filter(s=>p[s[0]]).map(s=>'<a class="soc '+s[0]+'" href="'+esc(p[s[0]])+'" target="_blank" rel="noopener noreferrer" aria-label="'+s[1]+'" title="'+s[1]+'">'+s[2]+'</a>').join("")+'</div></div></article>';
-  document.title = p.name + " — Unemployed Staff";
-}
-function route(){
-  const h = location.hash.slice(1), p = h.indexOf("profil-") === 0 ? PROFILES.find(x => slugFor(x) === h) : null;
-  document.body.classList.toggle("is-profile", !!p); $("profile").hidden = !p;
-  if (p) { showProfile(p); window.scrollTo(0,0); }
-  else { document.title = "Unemployed Staff — L’annuaire des freelances"; if (h === "annuaire") setTimeout(() => $("annuaire").scrollIntoView(), 0); }
-}
-async function load(){
-  try {
-    const r = await fetch("profiles.json", {cache:"no-store"});
-    if (!r.ok) throw new Error(r.status);
-    PROFILES = await r.json();
-    PROFILES.forEach(p => { p._slug = slugFor(p); });          // adresses figées avant le mélange
-    for (let i = PROFILES.length - 1; i > 0; i--) {              // ordre aléatoire à chaque ouverture
-      const j = Math.floor(Math.random() * (i + 1));
-      [PROFILES[i], PROFILES[j]] = [PROFILES[j], PROFILES[i]];
-    }
-  } catch (e) {
-    $("count").textContent = "";
-    $("grid").innerHTML = '<div class="empty">Impossible de charger profiles.json. En local, ouvre le site via un petit serveur (le navigateur bloque la lecture de fichiers directement) ou sur GitHub Pages.</div>';
-    return;
-  }
-  buildSugg(); render(); route();
-}
-window.addEventListener("hashchange", route);
-load();
-</script>
-<script>
-/* ====== Apparence claire / sombre ====== */
-(function(){
-  var root=document.documentElement, sw=document.getElementById("themeSwitch");
-  if(!sw) return;
-  function apply(t){
-    root.setAttribute("data-theme",t);
-    sw.setAttribute("aria-checked", t==="dark" ? "true":"false");
-    sw.setAttribute("aria-label", t==="dark" ? "Apparence sombre (activée) — passer en apparence claire" : "Apparence claire (activée) — passer en apparence sombre");
-  }
-  apply(root.getAttribute("data-theme")==="dark" ? "dark":"light");
-  sw.addEventListener("click",function(){
-    var t=root.getAttribute("data-theme")==="dark" ? "light":"dark";
-    apply(t);
-    try{localStorage.setItem("us-theme",t)}catch(e){}
-  });
-  try{
-    var mq=matchMedia("(prefers-color-scheme: dark)");
-    mq.addEventListener("change",function(e){
-      var saved=null; try{saved=localStorage.getItem("us-theme")}catch(x){}
-      if(!saved) apply(e.matches?"dark":"light");
-    });
-  }catch(e){}
-})();
-</script>
-<script>
-/* ====== Bouton flottant Buy Me a Coffee ====== */
-(function(){
-  var w=document.getElementById("bmcWrap"), x=document.getElementById("bmcClose");
-  if(!w) return;
-  var gone=false; try{gone=sessionStorage.getItem("us-bmc")==="0"}catch(e){}
-  if(gone){w.remove();return}
-  setTimeout(function(){w.classList.add("show")},2200);
-  x.addEventListener("click",function(){
-    w.classList.remove("show");
-    try{sessionStorage.setItem("us-bmc","0")}catch(e){}
-    setTimeout(function(){w.remove()},500);
-  });
-})();
-</script>
-</body>
-</html>
+      '<div class="role
