@@ -201,6 +201,15 @@ body.is-profile .home{display:none}
 .tile{display:grid;place-items:center;width:100%;height:auto;aspect-ratio:1;border-radius:12px;border:1.5px solid var(--ink);background:var(--chip);object-fit:cover;overflow:hidden}
 .tiles.two .tile{aspect-ratio:4/3}
 .tile.ph{font-size:1.5rem;background:linear-gradient(135deg,var(--tc),var(--chip));opacity:var(--o,1)}
+.igwrap{position:relative}
+.iglive{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;padding:9px 15px;font-size:.86rem;z-index:1}
+.iglive:active{transform:translate(-50%,-50%) scale(.97)}
+@media (hover:hover) and (pointer:fine){.iglive:hover{transform:translate(calc(-50% - 2px),calc(-50% - 2px))}}
+.ignote{margin:-4px 0 0;font-size:.74rem;color:var(--muted)}
+.igwrap.on{border:1.5px solid var(--ink);border-radius:14px;overflow:hidden;background:#fff;animation:igin 250ms var(--ease-out)}
+@keyframes igin{from{opacity:0}}
+.igframe{display:block;width:100%;height:440px;border:0}
+@media(min-width:960px){.igframe{height:520px}}
 .li{display:flex;flex-direction:column}
 .libn{height:64px;border-radius:14px;border:1.5px solid var(--ink);background:linear-gradient(120deg,#0a66c2,#70b5f9)}
 .liav{width:68px;height:68px;margin:-40px 0 0 14px;border-radius:50%;border:3px solid var(--paper);outline:1.5px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:1.3rem;color:#17140f;object-fit:cover}
@@ -454,8 +463,12 @@ function bentoHTML(p){
       : Array.from({length:n}, (_, j) => '<span class="tile ph" style="--tc:'+k.c+';--o:'+(1 - (j % 3) * 0.18)+'" aria-hidden="true">'+k.e+'</span>').join("")) + '</div>';
   };
   if (p.instagram) {
-    const h = handleOf(p.instagram, []);
-    out.push('<article class="bx b-ig">'+head("instagram", "Instagram", h ? "@"+h : p.name)+tiles(pv.instagram, 6, "", "Aperçu Instagram de "+p.name)+link(p.instagram, "Voir le profil Instagram")+'</article>');
+    const h = handleOf(p.instagram, []), live = /^[\w.]{1,30}$/.test(h);
+    out.push('<article class="bx b-ig">'+head("instagram", "Instagram", h ? "@"+h : p.name)+
+      '<div class="igwrap" id="igwrap">'+tiles(pv.instagram, 6, "", "Aperçu Instagram de "+p.name)+
+      (live ? '<button type="button" class="btn y iglive" id="igLive">Afficher l’aperçu en direct</button>' : '')+'</div>'+
+      (live ? '<p class="ignote" id="igNote">L’aperçu en direct charge du contenu d’Instagram (Meta), qui peut déposer des cookies.</p>' : '')+
+      link(p.instagram, "Voir le profil Instagram")+'</article>');
   }
   if (p.linkedin) {
     const h = handleOf(p.linkedin, ["in","pub","company"]);
@@ -476,7 +489,20 @@ function bentoHTML(p){
   return out.map((h, i) => h.replace('<article class="bx', '<article style="--i:'+i+'" class="bx')).join("");
 }
 
+/* Aperçu Instagram en direct : chargé seulement après un clic (cookies Meta), puis mémorisé le temps de la visite */
+function loadIG(p){
+  const w = $("igwrap"), h = handleOf(p.instagram, []); if (!w || !/^[\w.]{1,30}$/.test(h)) return;
+  w.innerHTML = '<iframe class="igframe" src="https://www.instagram.com/'+encodeURIComponent(h)+'/embed/" title="Aperçu du profil Instagram de '+esc(p.name)+'" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+  w.classList.add("on"); if ($("igNote")) $("igNote").remove();
+}
+function wireIG(p){
+  const b = $("igLive"); if (!b) return;
+  let ok = false; try { ok = sessionStorage.getItem("us-ig") === "1"; } catch (e) {}
+  if (ok) return loadIG(p);
+  b.onclick = () => { try { sessionStorage.setItem("us-ig", "1"); } catch (e) {} loadIG(p); };
+}
 function wireQR(p){
+  wireIG(p);
   const file = "unemployed-staff-" + slugFor(p).replace(/^profil-/, "") + ".png";
   const story = storyFor(p);                                   // préparée dès l'ouverture : le partage reste instantané
   $("dlStory").onclick = async e => {
