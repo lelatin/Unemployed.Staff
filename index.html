@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Unemployed Staff — Annuaire des freelances à Montpellier</title>
+<title>Unemployed.Staff</title>
 <meta name="description" content="Annuaire de freelances à Montpellier : designers, photographes, vidéastes, community managers, développeurs web. Trouve le bon profil et écris-lui en un clic.">
 <meta property="og:type" content="website"><meta property="og:locale" content="fr_FR">
-<meta property="og:title" content="Unemployed Staff — Annuaire des freelances à Montpellier">
+<meta property="og:title" content="Unemployed.Staff">
 <meta property="og:description" content="Des freelances dispos, du talent à la pelle. Repère un profil et contacte-le directement.">
 <meta property="og:url" content="https://lelatin.github.io/Unemployed.Staff/">
 <meta property="og:site_name" content="Unemployed Staff">
@@ -444,7 +444,7 @@ function showProfile(p){
     '<div class="actions"><a class="btn o" href="'+mail("Prise de contact : "+p.name+" (via Unemployed Staff)", p.email)+'">Contacter →</a>'+site+
     SOCS.filter(s=>p[s[0]]).map(s=>'<a class="soc '+s[0]+'" href="'+esc(p[s[0]])+'" target="_blank" rel="noopener noreferrer" aria-label="'+s[1]+'" title="'+s[1]+'">'+s[2]+'</a>').join("")+'</div></div></article>'+
     '<section class="bento enter" id="bento" aria-label="Réseaux sociaux et QR code">'+bentoHTML(p)+'</section>';
-  document.title = p.name + " — Unemployed Staff";
+  document.title = p.name + " · Unemployed.Staff";
   setTimeout(() => { const b = $("bento"); if (b) b.classList.remove("enter"); }, 700);
   wireQR(p);
 }
@@ -527,7 +527,7 @@ function wireQR(p){
     } finally { b.disabled = false; b.textContent = label; }
   };
   if ($("shStory")) $("shStory").onclick = async () => {
-    try { await navigator.share({files:[new File([await story], file, {type:"image/png"})], title: p.name + " — Unemployed Staff"}); } catch (e) {}
+    try { await navigator.share({files:[new File([await story], file, {type:"image/png"})], title: p.name + " · Unemployed.Staff"}); } catch (e) {}
   };
   $("cpLink").onclick = async e => {
     const b = e.currentTarget;
@@ -666,7 +666,7 @@ function route(){
   const h = location.hash.slice(1), p = h.indexOf("profil-") === 0 ? PROFILES.find(x => slugFor(x) === h) : null;
   document.body.classList.toggle("is-profile", !!p); $("profile").hidden = !p;
   if (p) { showProfile(p); window.scrollTo(0,0); }
-  else { document.title = "Unemployed Staff — Annuaire des freelances à Montpellier"; if (h === "annuaire") setTimeout(() => $("annuaire").scrollIntoView(), 0); }
+  else { document.title = "Unemployed.Staff"; if (h === "annuaire") setTimeout(() => $("annuaire").scrollIntoView(), 0); }
 }
 async function load(){
   try {
