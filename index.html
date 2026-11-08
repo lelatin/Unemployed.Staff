@@ -175,8 +175,42 @@ body.is-profile .home{display:none}
 .pinfo .actions{margin-top:6px}
 .nl{color:inherit;text-decoration:none}
 @media (hover:hover) and (pointer:fine){.nl:hover{text-decoration:underline}}
+/* Carte entière cliquable : le lien du nom s'étend sur toute la carte, les boutons restent au-dessus */
+.card{position:relative;cursor:pointer}
+.card .nl::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:1}
+.card .actions{position:relative;z-index:2;pointer-events:none}.card .actions>*{pointer-events:auto}
+.card .nl:focus-visible{outline:none}
+.card:has(.nl:focus-visible){outline:3px solid var(--yel);outline-offset:4px}
+@media (hover:hover) and (pointer:fine){.card:hover .nl{text-decoration:underline}}
 .login{color:inherit;text-decoration:underline}
 @media(max-width:640px){.pcard{flex-direction:column}.pavatar{width:140px;height:140px;font-size:3rem}}
+/* ===== Bento du profil : aperçus réseaux + QR code ===== */
+.bento{display:grid;gap:18px;margin-top:22px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+@media(min-width:960px){.bento{grid-template-columns:1.2fr 1fr 1fr}.b-ig{grid-column:1;grid-row:span 2}.b-qr{grid-column:3;grid-row:1/span 2}}
+.bx{display:flex;flex-direction:column;gap:12px;min-width:0;background:var(--paper);color:var(--ink);border:2px solid var(--ink);border-radius:24px;padding:18px;box-shadow:5px 5px 0 var(--hard);transition:transform 200ms var(--ease-out),box-shadow 200ms var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.bx:hover{transform:translate(-2px,-3px);box-shadow:7px 8px 0 var(--hard)}}
+.bento.enter .bx{animation:cardin 320ms var(--ease-out) both;animation-delay:calc(var(--i,0) * 50ms)}
+.bh{display:flex;align-items:center;gap:10px;min-width:0}
+.bh>div{min-width:0}
+.bh .soc{flex:none;box-shadow:none}
+.bh b{display:block;font-size:1.05rem;letter-spacing:-.02em;line-height:1.15}
+.bh small{display:block;color:var(--muted);font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bx>.btn{align-self:flex-start;margin-top:auto;padding:8px 14px;font-size:.85rem;box-shadow:2px 2px 0 var(--hard)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tiles.two{grid-template-columns:repeat(2,1fr)}
+.tile{display:grid;place-items:center;width:100%;height:auto;aspect-ratio:1;border-radius:12px;border:1.5px solid var(--ink);background:var(--chip);object-fit:cover;overflow:hidden}
+.tiles.two .tile{aspect-ratio:4/3}
+.tile.ph{font-size:1.5rem;background:linear-gradient(135deg,var(--tc),var(--chip));opacity:var(--o,1)}
+.li{display:flex;flex-direction:column}
+.libn{height:64px;border-radius:14px;border:1.5px solid var(--ink);background:linear-gradient(120deg,#0a66c2,#70b5f9)}
+.liav{width:68px;height:68px;margin:-40px 0 0 14px;border-radius:50%;border:3px solid var(--paper);outline:1.5px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:1.3rem;color:#17140f;object-fit:cover}
+.lin{margin:8px 0 0;font-size:.92rem;color:var(--muted)}.lin b{color:var(--ink);font-size:1.02rem}
+.qr{width:100%;max-width:300px;margin:0 auto;aspect-ratio:1;background:#fff3dc;border:2px solid #17140f;border-radius:18px;padding:4px;overflow:hidden}
+.qr svg{display:block;width:100%;height:100%}
+.qract{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:auto}
+.qract .btn{padding:8px 14px;font-size:.85rem;box-shadow:2px 2px 0 var(--hard)}
+.btn:disabled{opacity:.6;cursor:progress}
+.qrtxt{margin:0;text-align:center;font-size:.8rem;color:var(--muted)}
 /* ===== Switch apparence claire / sombre ===== */
 .hactions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
 .theme{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;align-items:center;padding:3px;border-radius:999px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:3px 3px 0 var(--hard);cursor:pointer;font:inherit;font-weight:600;font-size:.74rem;line-height:1.2;transition:transform 160ms var(--ease-out),box-shadow 160ms var(--ease-out);touch-action:manipulation}
@@ -392,8 +426,201 @@ function showProfile(p){
     '<p class="bio">'+esc(p.bio || "Ce profil n’a pas encore de présentation.")+'</p>'+
     '<div class="tags">'+(p.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div>'+
     '<div class="actions"><a class="btn o" href="'+mail("Prise de contact : "+p.name+" (via Unemployed Staff)", p.email)+'">Contacter →</a>'+site+
-    SOCS.filter(s=>p[s[0]]).map(s=>'<a class="soc '+s[0]+'" href="'+esc(p[s[0]])+'" target="_blank" rel="noopener noreferrer" aria-label="'+s[1]+'" title="'+s[1]+'">'+s[2]+'</a>').join("")+'</div></div></article>';
+    SOCS.filter(s=>p[s[0]]).map(s=>'<a class="soc '+s[0]+'" href="'+esc(p[s[0]])+'" target="_blank" rel="noopener noreferrer" aria-label="'+s[1]+'" title="'+s[1]+'">'+s[2]+'</a>').join("")+'</div></div></article>'+
+    '<section class="bento enter" id="bento" aria-label="Réseaux sociaux et QR code">'+bentoHTML(p)+'</section>';
   document.title = p.name + " — Unemployed Staff";
+  setTimeout(() => { const b = $("bento"); if (b) b.classList.remove("enter"); }, 700);
+  wireQR(p);
+}
+
+/* ===== BENTO : aperçus réseaux + QR code =====
+   Les aperçus viennent de profiles.json → "previews": { "instagram": [images], "behance": [images], "linkedin": "titre" }.
+   Instagram / LinkedIn / Behance n'autorisent pas l'affichage en direct sans clé d'API : on montre donc des images choisies. */
+const SITE_URL = "https://lelatin.github.io/Unemployed.Staff/";
+const pageUrl = () => (/^https?:$/.test(location.protocol) && !/^(localhost|127\.|\[::1\])/.test(location.hostname)) ? location.origin + location.pathname : SITE_URL;
+const profileUrl = p => pageUrl() + "#" + slugFor(p);
+const okSrc = s => typeof s === "string" && s.trim() !== "" && (/^https?:\/\//i.test(s) || !/^[a-z][\w+.-]*:/i.test(s));
+const handleOf = (url, skip) => { try { const h = new URL(url).pathname.split("/").filter(Boolean).find(s => !skip.includes(s)); return h ? decodeURIComponent(h) : ""; } catch (e) { return ""; } };
+const canShareFiles = (() => { try { return !!(navigator.canShare && navigator.canShare({files:[new File([""], "t.png", {type:"image/png"})]})); } catch (e) { return false; } })();
+
+function bentoHTML(p){
+  const k = byName(p.role), pv = p.previews || {}, out = [];
+  const head = (net, label, sub) => '<div class="bh"><span class="soc '+net+'" aria-hidden="true">'+(SOCS.find(s=>s[0]===net)||[,,"QR"])[2]+'</span><div><b>'+label+'</b><small>'+esc(sub)+'</small></div></div>';
+  const link = (url, label) => '<a class="btn" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+label+' ↗</a>';
+  const tiles = (imgs, n, cls, alt) => {
+    const list = (Array.isArray(imgs) ? imgs : []).filter(okSrc).slice(0, n);
+    return '<div class="tiles'+cls+'">' + (list.length
+      ? list.map(s => '<img class="tile" src="'+esc(s)+'" alt="'+esc(alt)+'" loading="lazy" decoding="async">').join("")
+      : Array.from({length:n}, (_, j) => '<span class="tile ph" style="--tc:'+k.c+';--o:'+(1 - (j % 3) * 0.18)+'" aria-hidden="true">'+k.e+'</span>').join("")) + '</div>';
+  };
+  if (p.instagram) {
+    const h = handleOf(p.instagram, []);
+    out.push('<article class="bx b-ig">'+head("instagram", "Instagram", h ? "@"+h : p.name)+tiles(pv.instagram, 6, "", "Aperçu Instagram de "+p.name)+link(p.instagram, "Voir le profil Instagram")+'</article>');
+  }
+  if (p.linkedin) {
+    const h = handleOf(p.linkedin, ["in","pub","company"]);
+    const av = p.photo ? '<img class="liav" src="'+esc(p.photo)+'" alt="" width="68" height="68" loading="lazy">' : '<div class="liav" style="background:'+k.c+'" aria-hidden="true">'+esc(initials(p.name))+'</div>';
+    out.push('<article class="bx b-li">'+head("linkedin", "LinkedIn", h || p.name)+'<div class="li"><div class="libn"></div>'+av+
+      '<p class="lin"><b>'+esc(p.name)+'</b><br>'+esc(pv.linkedin || [p.role, p.city].filter(Boolean).join(" · "))+'</p></div>'+link(p.linkedin, "Voir le profil LinkedIn")+'</article>');
+  }
+  if (p.behance) {
+    const h = handleOf(p.behance, []);
+    out.push('<article class="bx b-be">'+head("behance", "Behance", h || p.name)+tiles(pv.behance, 2, " two", "Projet Behance de "+p.name)+link(p.behance, "Voir les projets Behance")+'</article>');
+  }
+  out.push('<article class="bx b-qr">'+head("qrb", "QR code", "Scanne pour ouvrir ce profil")+
+    '<div class="qr">'+qrSVG(profileUrl(p), "QR code vers le profil de "+p.name)+'</div>'+
+    '<div class="qract"><button type="button" class="btn o" id="dlStory">Télécharger la story ↓</button>'+
+    (canShareFiles ? '<button type="button" class="btn y" id="shStory">Partager</button>' : '')+
+    '<button type="button" class="btn" id="cpLink">Copier le lien</button></div>'+
+    '<p class="qrtxt">Image 1080 × 1920 : en fond d’écran ou dans ta story Instagram.</p></article>');
+  return out.map((h, i) => h.replace('<article class="bx', '<article style="--i:'+i+'" class="bx')).join("");
+}
+
+function wireQR(p){
+  const file = "unemployed-staff-" + slugFor(p).replace(/^profil-/, "") + ".png";
+  const story = storyFor(p);                                   // préparée dès l'ouverture : le partage reste instantané
+  $("dlStory").onclick = async e => {
+    const b = e.currentTarget, label = b.textContent; b.disabled = true; b.textContent = "Préparation…";
+    try {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(await story); a.download = file;
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    } finally { b.disabled = false; b.textContent = label; }
+  };
+  if ($("shStory")) $("shStory").onclick = async () => {
+    try { await navigator.share({files:[new File([await story], file, {type:"image/png"})], title: p.name + " — Unemployed Staff"}); } catch (e) {}
+  };
+  $("cpLink").onclick = async e => {
+    const b = e.currentTarget;
+    try { await navigator.clipboard.writeText(profileUrl(p)); b.textContent = "Lien copié ✓"; } catch (x) { b.textContent = "Copie impossible"; }
+    setTimeout(() => { b.textContent = "Copier le lien"; }, 1800);
+  };
+}
+
+/* ===== QR code : encodeur intégré (aucun service externe), mode octets, correction M ===== */
+const qrMatrix = (() => {
+  const ECC = [0,10,16,26,18,24,16,18,22,22,26,30,22,22,24,24,28,28,26,26,26,26,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28];
+  const BLK = [0,1,1,1,2,2,4,4,4,5,5,5,8,9,9,10,10,11,13,14,16,17,17,18,20,21,23,25,26,28,29,31,33,35,37,38,40,43,45,47,49];
+  const raw = v => { let r = (16*v + 128)*v + 64; if (v >= 2) { const n = Math.floor(v/7) + 2; r -= (25*n - 10)*n - 55; if (v >= 7) r -= 36; } return r; };
+  const mul = (a, b) => { let z = 0; for (let i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((b >>> i) & 1) * a; } return z; };
+  const divisor = d => { const r = Array(d).fill(0); r[d-1] = 1; let root = 1; for (let i = 0; i < d; i++) { for (let j = 0; j < d; j++) { r[j] = mul(r[j], root); if (j + 1 < d) r[j] ^= r[j+1]; } root = mul(root, 2); } return r; };
+  const rem = (data, div) => { const r = div.map(() => 0); for (const b of data) { const f = b ^ r.shift(); r.push(0); div.forEach((c, i) => r[i] ^= mul(c, f)); } return r; };
+  const bit = (x, i) => ((x >>> i) & 1) !== 0;
+  const MASKS = [(x,y)=>(x+y)%2===0, (x,y)=>y%2===0, (x,y)=>x%3===0, (x,y)=>(x+y)%3===0, (x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,
+                 (x,y)=>x*y%2+x*y%3===0, (x,y)=>(x*y%2+x*y%3)%2===0, (x,y)=>((x+y)%2+x*y%3)%2===0];
+  return text => {
+    const bytes = Array.from(new TextEncoder().encode(text));
+    const nData = v => Math.floor(raw(v)/8) - ECC[v]*BLK[v];
+    let v = 1; while (4 + (v < 10 ? 8 : 16) + bytes.length*8 > nData(v)*8) if (++v > 40) throw new Error("Texte trop long pour un QR code");
+    // données + remplissage
+    const cap = nData(v)*8, bb = [], put = (val, len) => { for (let i = len - 1; i >= 0; i--) bb.push((val >>> i) & 1); };
+    put(4, 4); put(bytes.length, v < 10 ? 8 : 16); bytes.forEach(b => put(b, 8));
+    put(0, Math.min(4, cap - bb.length)); put(0, (8 - bb.length % 8) % 8);
+    for (let pad = 0xEC; bb.length < cap; pad ^= 0xEC ^ 0x11) put(pad, 8);
+    const data = []; for (let i = 0; i < bb.length; i += 8) { let b = 0; for (let j = 0; j < 8; j++) b = (b << 1) | bb[i+j]; data.push(b); }
+    // blocs + correction d'erreurs, entrelacés
+    const nb = BLK[v], el = ECC[v], rawCw = Math.floor(raw(v)/8), nShort = nb - rawCw % nb, shortLen = Math.floor(rawCw/nb), div = divisor(el), blocks = [];
+    for (let i = 0, k = 0; i < nb; i++) { const d = data.slice(k, k + shortLen - el + (i < nShort ? 0 : 1)); k += d.length; const e = rem(d, div); if (i < nShort) d.push(0); blocks.push(d.concat(e)); }
+    const cw = []; for (let i = 0; i < blocks[0].length; i++) blocks.forEach((b, j) => { if (i !== shortLen - el || j >= nShort) cw.push(b[i]); });
+    // motifs fixes
+    const size = v*4 + 17, M = [...Array(size)].map(() => Array(size).fill(false)), F = [...Array(size)].map(() => Array(size).fill(false));
+    const set = (x, y, d) => { M[y][x] = d; F[y][x] = true; };
+    for (let i = 0; i < size; i++) { set(6, i, i % 2 === 0); set(i, 6, i % 2 === 0); }
+    [[3,3],[size-4,3],[3,size-4]].forEach(([cx, cy]) => { for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) { const d = Math.max(Math.abs(dx), Math.abs(dy)), xx = cx+dx, yy = cy+dy; if (xx >= 0 && xx < size && yy >= 0 && yy < size) set(xx, yy, d !== 2 && d !== 4); } });
+    if (v > 1) {
+      const n = Math.floor(v/7) + 2, step = v === 32 ? 26 : Math.ceil((v*4 + 4)/(n*2 - 2))*2, pos = [6];
+      for (let q = size - 7; pos.length < n; q -= step) pos.splice(1, 0, q);
+      pos.forEach((a, i) => pos.forEach((b, j) => { if ((i === 0 && j === 0) || (i === 0 && j === n-1) || (i === n-1 && j === 0)) return;
+        for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) set(a+dx, b+dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1); }));
+    }
+    const fmt = mask => { const d = mask; let r = d; for (let i = 0; i < 10; i++) r = (r << 1) ^ ((r >>> 9) * 0x537); const b = ((d << 10) | r) ^ 0x5412;
+      for (let i = 0; i <= 5; i++) set(8, i, bit(b, i)); set(8, 7, bit(b, 6)); set(8, 8, bit(b, 7)); set(7, 8, bit(b, 8)); for (let i = 9; i < 15; i++) set(14 - i, 8, bit(b, i));
+      for (let i = 0; i < 8; i++) set(size - 1 - i, 8, bit(b, i)); for (let i = 8; i < 15; i++) set(8, size - 15 + i, bit(b, i)); set(8, size - 8, true); };
+    if (v >= 7) { let r = v; for (let i = 0; i < 12; i++) r = (r << 1) ^ ((r >>> 11) * 0x1F25); const b = (v << 12) | r;
+      for (let i = 0; i < 18; i++) { const c = bit(b, i), a = size - 11 + i % 3, q = Math.floor(i/3); set(a, q, c); set(q, a, c); } }
+    fmt(0);
+    // placement en zigzag
+    let i = 0;
+    for (let right = size - 1; right >= 1; right -= 2) { if (right === 6) right = 5;
+      for (let vert = 0; vert < size; vert++) for (let j = 0; j < 2; j++) { const x = right - j, y = ((right + 1) & 2) === 0 ? size - 1 - vert : vert;
+        if (!F[y][x] && i < cw.length*8) { M[y][x] = bit(cw[i >>> 3], 7 - (i & 7)); i++; } } }
+    // choix du meilleur masque
+    const apply = m => { for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (!F[y][x] && MASKS[m](x, y)) M[y][x] = !M[y][x]; };
+    const score = () => { let p = 0, dark = 0;
+      for (let a = 0; a < size; a++) for (const col of [false, true]) { let run = 0, prev = null, s = "";
+        for (let b = 0; b < size; b++) { const c = col ? M[b][a] : M[a][b]; s += c ? "1" : "0"; if (c === prev) { run++; if (run === 5) p += 3; else if (run > 5) p++; } else { run = 1; prev = c; } }
+        p += 40 * (s.match(/(?=10111010000|00001011101)/g) || []).length; }
+      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) { const c = M[y][x]; if (c) dark++; if (x < size-1 && y < size-1 && c === M[y][x+1] && c === M[y+1][x] && c === M[y+1][x+1]) p += 3; }
+      const t = size*size; return p + (Math.ceil(Math.abs(dark*20 - t*10)/t) - 1)*10; };
+    let best = 0, bestScore = Infinity;
+    for (let m = 0; m < 8; m++) { apply(m); fmt(m); const s = score(); if (s < bestScore) { bestScore = s; best = m; } apply(m); }
+    apply(best); fmt(best);
+    return M;
+  };
+})();
+function qrSVG(text, label){
+  const m = qrMatrix(text), n = m.length, q = n + 8; let d = "";
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (m[y][x]) d += "M"+(x+4)+" "+(y+4)+"h1v1h-1z";
+  return '<svg viewBox="0 0 '+q+' '+q+'" role="img" aria-label="'+esc(label)+'" shape-rendering="crispEdges"><rect width="'+q+'" height="'+q+'" fill="#fff3dc"/><path d="'+d+'" fill="#17140f"/></svg>';
+}
+
+/* ===== Image story 1080 × 1920 (9:16) avec le tapis de découpe ===== */
+const storyCache = new Map();
+function storyFor(p){ const s = slugFor(p); if (!storyCache.has(s)) storyCache.set(s, drawStory(p)); return storyCache.get(s); }
+function rrect(x, X, Y, w, h, r){ x.beginPath(); x.moveTo(X+r, Y); x.arcTo(X+w, Y, X+w, Y+h, r); x.arcTo(X+w, Y+h, X, Y+h, r); x.arcTo(X, Y+h, X, Y, r); x.arcTo(X, Y, X+w, Y, r); x.closePath(); }
+async function drawStory(p){
+  const FONT = '"Bricolage Grotesque",system-ui,sans-serif', INK = "#17140f", PAPER = "#fff3dc", CREAM = "#fff3dc";
+  try { await Promise.race([Promise.all(["800 90px", "600 40px"].map(f => document.fonts.load(f + " " + FONT))), new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
+  const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d"), k = byName(p.role);
+  // tapis de découpe : dégradé, quadrillage fin + fort, diagonales
+  const g = x.createRadialGradient(W*.3, H*.15, 0, W*.3, H*.15, H*1.05); g.addColorStop(0, "#0b6b57"); g.addColorStop(1, "#06483b");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = "rgba(255,255,255,.14)"; for (let i = 0; i <= W; i += 48) x.fillRect(i, 0, 2, H); for (let j = 0; j <= H; j += 48) x.fillRect(0, j, W, 2);
+  x.fillStyle = "rgba(255,255,255,.28)"; for (let i = 0; i <= W; i += 240) x.fillRect(i - 1, 0, 4, H); for (let j = 0; j <= H; j += 240) x.fillRect(0, j - 1, W, 4);
+  x.strokeStyle = "rgba(255,214,90,.28)"; x.lineWidth = 3;
+  for (let s = -H; s < W; s += 960) { x.beginPath(); x.moveTo(s, H); x.lineTo(s + H, 0); x.stroke(); }
+  x.fillStyle = "rgba(255,243,220,.5)"; x.font = "600 22px " + FONT; x.textBaseline = "top";
+  for (let i = 240, n = 5; i < W; i += 240, n += 5) x.fillText(String(n), i + 8, 10);
+  for (let j = 240, n = 5; j < H; j += 240, n += 5) x.fillText(String(n), 10, j + 8);
+  // lumière chaude
+  x.globalCompositeOperation = "screen";
+  [[W*.12, 0, H*.7, "255,150,70", .42], [W*.85, H*.72, H*.4, "255,190,110", .16]].forEach(([gx, gy, r, rgb, a]) => {
+    const l = x.createRadialGradient(gx, gy, 0, gx, gy, r); l.addColorStop(0, "rgba("+rgb+","+a+")"); l.addColorStop(1, "rgba("+rgb+",0)"); x.fillStyle = l; x.fillRect(0, 0, W, H); });
+  x.globalCompositeOperation = "source-over";
+  // logo
+  x.textBaseline = "alphabetic"; x.font = "800 64px " + FONT;
+  const logo = [["Unemployed", CREAM], [".", "#ffc933"], ["Staff", CREAM]];
+  let lx = (W - logo.reduce((a, [t]) => a + x.measureText(t).width, 0)) / 2;
+  // OY : tout est descendu pour laisser la place à l'horloge de l'écran verrouillé (et rester dans la zone sûre Instagram)
+  const OY = 120;
+  logo.forEach(([t, col]) => { x.fillStyle = col; x.fillText(t, lx, 250 + OY); lx += x.measureText(t).width; });
+  x.textAlign = "center"; x.font = "600 30px " + FONT; x.fillStyle = "rgba(255,243,220,.85)"; x.fillText("Annuaire des freelances · Montpellier", W/2, 302 + OY);
+  // carte papier avec le QR
+  const m = qrMatrix(profileUrl(p)), q = m.length + 8, cell = Math.floor(640 / q), qs = cell * q;
+  const cx = 110, cy = 380 + OY, cw = 860, qx = Math.round((W - qs) / 2), qy = cy + 36;
+  const nameY = qy + qs + 86, roleY = nameY + 62, metaY = roleY + 54, ch = metaY + 58 - cy;
+  x.save(); x.translate(W/2, cy + ch/2); x.rotate(-1.2 * Math.PI / 180); x.translate(-W/2, -(cy + ch/2));
+  rrect(x, cx + 18, cy + 18, cw, ch, 52); x.fillStyle = "#06241d"; x.fill();
+  rrect(x, cx, cy, cw, ch, 52); x.fillStyle = PAPER; x.fill(); x.lineWidth = 6; x.strokeStyle = INK; x.stroke();
+  x.fillStyle = INK; x.beginPath();
+  m.forEach((row, r) => row.forEach((on, col) => { if (on) x.rect(qx + (col + 4) * cell, qy + (r + 4) * cell, cell, cell); })); x.fill();
+  let fs = 88; do { x.font = "800 " + fs + "px " + FONT; fs -= 4; } while (x.measureText(p.name).width > 740 && fs > 40);
+  x.fillStyle = INK; x.fillText(p.name, W/2, nameY);
+  x.font = "600 40px " + FONT; x.fillText(k.e + " " + p.role, W/2, roleY);
+  x.font = "600 32px " + FONT; x.fillStyle = "#6a5f4a"; x.fillText("📍 " + p.city + "  ·  " + (p.dispo ? "Disponible" : "Indisponible"), W/2, metaY);
+  // pastille « Scanne-moi »
+  x.save(); x.translate(cx + cw - 150, cy - 2); x.rotate(6 * Math.PI / 180);
+  rrect(x, -142 + 6, -38 + 6, 284, 76, 38); x.fillStyle = "#06241d"; x.fill();
+  rrect(x, -142, -38, 284, 76, 38); x.fillStyle = "#ff5a1f"; x.fill(); x.lineWidth = 5; x.strokeStyle = INK; x.stroke();
+  x.fillStyle = INK; x.font = "800 36px " + FONT; x.textBaseline = "middle"; x.fillText("Scanne-moi ✦", 0, 2);
+  x.restore(); x.restore(); x.textBaseline = "alphabetic";
+  // accroche + adresse
+  const tag = "Du talent à la pelle.", ty = cy + ch + 130; x.font = "800 54px " + FONT;
+  const tw = x.measureText(tag).width + 40;
+  x.save(); x.translate(W/2, ty - 18); x.rotate(1.2 * Math.PI / 180);
+  rrect(x, -tw/2, -44, tw, 82, 12); x.fillStyle = "#ffc933"; x.fill(); x.fillStyle = INK; x.fillText(tag, 0, 18); x.restore();
+  x.font = "600 30px " + FONT; x.fillStyle = "rgba(255,243,220,.85)"; x.fillText(pageUrl().replace(/^https?:\/\//, "").replace(/\/$/, ""), W/2, ty + 86);
+  return new Promise((ok, ko) => c.toBlob(b => b ? ok(b) : ko(new Error("Image impossible")), "image/png"));
 }
 function route(){
   const h = location.hash.slice(1), p = h.indexOf("profil-") === 0 ? PROFILES.find(x => slugFor(x) === h) : null;
