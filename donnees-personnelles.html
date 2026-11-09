@@ -8,13 +8,14 @@
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" id="tc" content="#06483b">
-<script>(function(){try{var t=localStorage.getItem("us-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.getElementById("tc").content="#03231c"}}catch(e){}})();</script>
+<script>(function(){try{var p=localStorage.getItem("us-pal");if(p==="rose"||p==="bleu"||p==="lilas")document.documentElement.setAttribute("data-palette",p);var t=localStorage.getItem("us-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.getElementById("tc").content="#03231c"}}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
  --mat:#0b6b57;--matdeep:#06483b;--paper:#fff3dc;--ink:#17140f;--chip:#f0e0bd;--muted:#6a5f4a;--hard:#06241d;--cream:#fff3dc;--accent:#ff5a1f;--yel:#ffc933;color-scheme:light}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--mat:#073b30;--matdeep:#03231c;--paper:#211e17;--ink:#f6ecd5;--chip:#332e22;--muted:#b3a688;--hard:#010d0a;color-scheme:dark}}
+[data-palette="rose"]{--accent:#ff7ab8;--yel:#e8ff4d}[data-palette="bleu"]{--accent:#5b8cff;--yel:#7cf0c3}[data-palette="lilas"]{--accent:#a98bff;--yel:#ffc9a0}
 :root[data-theme="dark"]{--mat:#073b30;--matdeep:#03231c;--paper:#211e17;--ink:#f6ecd5;--chip:#332e22;--muted:#b3a688;--hard:#010d0a;color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;color:var(--cream);font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.55;

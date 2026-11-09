@@ -17,6 +17,7 @@
 <meta name="theme-color" id="tc" content="#06483b">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script>
+(function(){try{var p=localStorage.getItem("us-pal");if(p==="rose"||p==="bleu"||p==="lilas")document.documentElement.setAttribute("data-palette",p)}catch(e){}})();
 (function(){try{var t=localStorage.getItem("us-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
@@ -35,6 +36,10 @@
     --hard:#010d0a; --ok:#4cd68a; color-scheme:dark;
   }
 }
+/* Palettes (mêmes couleurs que le site CV) : --accent = orange, --yel = jaune */
+[data-palette="rose"]{--accent:#ff7ab8;--yel:#e8ff4d}
+[data-palette="bleu"]{--accent:#5b8cff;--yel:#7cf0c3}
+[data-palette="lilas"]{--accent:#a98bff;--yel:#ffc9a0}
 :root[data-theme="dark"]{
   --mat:#073b30; --matdeep:#03231c; --paper:#211e17; --ink:#f6ecd5; --chip:#332e22; --muted:#b3a688;
   --hard:#010d0a; --ok:#4cd68a; color-scheme:dark;
@@ -229,25 +234,24 @@ img.libn{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;
 .qract .btn{padding:8px 14px;font-size:.85rem;box-shadow:2px 2px 0 var(--hard)}
 .btn:disabled{opacity:.6;cursor:progress}
 .qrtxt{margin:0;text-align:center;font-size:.8rem;color:var(--muted)}
-/* ===== Switch apparence claire / sombre ===== */
+/* ===== Header : palettes de couleurs + clair / sombre (comme le site CV) ===== */
 .hactions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
-.theme{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;align-items:center;padding:3px;border-radius:999px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:3px 3px 0 var(--hard);cursor:pointer;font:inherit;font-weight:600;font-size:.74rem;line-height:1.2;transition:transform 160ms var(--ease-out),box-shadow 160ms var(--ease-out);touch-action:manipulation}
-@media (hover:hover) and (pointer:fine){.theme:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--hard)}}
-.theme:active{transform:scale(.97)}
-.theme:focus-visible{outline:3px solid var(--yel);outline-offset:3px}
-.theme::before{content:"";box-sizing:border-box;position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:var(--yel);border:1.5px solid var(--ink);transition:transform 250ms var(--ease-io)}
-.theme[aria-checked="true"]::before{transform:translateX(100%)}
-.theme .w{display:none}
-.theme span{position:relative;z-index:1;padding:5px 11px;white-space:nowrap;text-align:center;transition:color .2s}
-.theme[aria-checked="false"] .tl,.theme[aria-checked="true"] .td{color:#17140f}
-@media(max-width:560px){.theme .w{display:none}.theme span{padding:5px 9px}}
+.ctrl{display:flex;gap:10px;align-items:center}
+.sws{display:flex;gap:6px;background:var(--paper);border:2px solid var(--ink);border-radius:999px;padding:4px;box-shadow:3px 3px 0 var(--hard)}
+.sw{width:36px;height:36px;padding:0;border-radius:50%;border:2px solid var(--ink);cursor:pointer;background:linear-gradient(135deg,var(--a) 50%,var(--b) 50%);touch-action:manipulation;transition:transform 160ms var(--ease-out),box-shadow 160ms var(--ease-out)}
+.sw[aria-checked="true"]{box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--ink)}
+@media (hover:hover) and (pointer:fine){.sw:hover{transform:translateY(-2px)}}
+.sw:active{transform:scale(.97)}
+.btn.ic{display:inline-grid;place-items:center;width:44px;height:44px;padding:0;font-size:1.1rem;line-height:1}
 @media(max-width:560px){
   header.top{align-items:flex-start;flex-wrap:wrap;gap:12px 10px}
   .hactions{flex-direction:column;flex-wrap:nowrap;align-items:flex-end;gap:10px;flex:none;margin-left:auto}
   .logo{flex:none;font-size:1.1rem;padding-top:7px;white-space:nowrap}
   header.top .btn{font-size:.85rem;padding:9px 13px;white-space:nowrap}
+  header.top .btn.ic{width:40px;height:40px;padding:0}
+  .sw{width:30px;height:30px}
 }
-@media (prefers-reduced-motion:reduce){.theme,.theme::before,.theme span{transition:none}}
+@media (prefers-reduced-motion:reduce){.sw{transition:none}}
 /* ===== Bouton flottant Buy Me a Coffee ===== */
 .page{padding-bottom:64px}
 .bmcwrap{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;opacity:0;transform:translateY(16px) scale(.95);pointer-events:none;transition:opacity 150ms var(--ease-out),transform 150ms var(--ease-out)}
@@ -282,10 +286,15 @@ img.libn{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;
     <div class="logo">Unemployed<b>.</b>Staff</div>
     <div class="hactions">
       <a class="btn y" id="joinTop" href="#">Rejoindre l’annuaire</a>
-      <button type="button" class="theme" id="themeSwitch" role="switch" aria-checked="false" aria-label="Apparence sombre" title="Changer d’apparence">
-        <span class="tl" aria-hidden="true">☀️<span class="w"> Claire</span></span>
-        <span class="td" aria-hidden="true">🌙<span class="w"> Sombre</span></span>
-      </button>
+      <div class="ctrl">
+        <div class="sws" id="sws" role="radiogroup" aria-label="Palette de couleurs">
+          <button type="button" class="sw" role="radio" aria-checked="true" data-p="orange" aria-label="Palette Orange &amp; jaune" title="Orange &amp; jaune" style="--a:#ff5a1f;--b:#ffc933"></button>
+          <button type="button" class="sw" role="radio" aria-checked="false" data-p="rose" aria-label="Palette Rose &amp; citron" title="Rose &amp; citron" style="--a:#ff7ab8;--b:#e8ff4d"></button>
+          <button type="button" class="sw" role="radio" aria-checked="false" data-p="bleu" aria-label="Palette Bleu &amp; menthe" title="Bleu &amp; menthe" style="--a:#5b8cff;--b:#7cf0c3"></button>
+          <button type="button" class="sw" role="radio" aria-checked="false" data-p="lilas" aria-label="Palette Lilas &amp; pêche" title="Lilas &amp; pêche" style="--a:#a98bff;--b:#ffc9a0"></button>
+        </div>
+        <button type="button" class="btn ic" id="themeSwitch" aria-label="Basculer clair / sombre" aria-pressed="false" title="Changer d’apparence">◐</button>
+      </div>
     </div>
   </header>
 
@@ -520,16 +529,16 @@ function wireIG(p){
 function wireQR(p){
   wireIG(p);
   const file = "unemployed-staff-" + slugFor(p).replace(/^profil-/, "") + ".png";
-  const story = storyFor(p);                                   // préparée dès l'ouverture : le partage reste instantané
+  storyFor(p);                                                 // préparée dès l’ouverture : le partage reste instantané (recalculée si la palette change)
   $("dlStory").onclick = async e => {
     const b = e.currentTarget, label = b.textContent; b.disabled = true; b.textContent = "Préparation…";
     try {
-      const a = document.createElement("a"); a.href = URL.createObjectURL(await story); a.download = file;
+      const a = document.createElement("a"); a.href = URL.createObjectURL(await storyFor(p)); a.download = file;
       document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
     } finally { b.disabled = false; b.textContent = label; }
   };
   if ($("shStory")) $("shStory").onclick = async () => {
-    try { await navigator.share({files:[new File([await story], file, {type:"image/png"})], title: p.name + " · Unemployed.Staff"}); } catch (e) {}
+    try { await navigator.share({files:[new File([await storyFor(p)], file, {type:"image/png"})], title: p.name + " · Unemployed.Staff"}); } catch (e) {}
   };
   $("cpLink").onclick = async e => {
     const b = e.currentTarget;
@@ -607,10 +616,11 @@ function qrSVG(text, label){
 
 /* ===== Image story 1080 × 1920 (9:16) avec le tapis de découpe ===== */
 const storyCache = new Map();
-function storyFor(p){ const s = slugFor(p); if (!storyCache.has(s)) storyCache.set(s, drawStory(p)); return storyCache.get(s); }
+function storyFor(p){ const s = slugFor(p) + ":" + (document.documentElement.getAttribute("data-palette") || "orange"); if (!storyCache.has(s)) storyCache.set(s, drawStory(p)); return storyCache.get(s); }
 function rrect(x, X, Y, w, h, r){ x.beginPath(); x.moveTo(X+r, Y); x.arcTo(X+w, Y, X+w, Y+h, r); x.arcTo(X+w, Y+h, X, Y+h, r); x.arcTo(X, Y+h, X, Y, r); x.arcTo(X, Y, X+w, Y, r); x.closePath(); }
 async function drawStory(p){
   const FONT = '"Bricolage Grotesque",system-ui,sans-serif', INK = "#17140f", PAPER = "#fff3dc", CREAM = "#fff3dc";
+  const cs = getComputedStyle(document.documentElement), ACC = cs.getPropertyValue("--accent").trim() || "#ff5a1f", YEL = cs.getPropertyValue("--yel").trim() || "#ffc933";
   try { await Promise.race([Promise.all(["800 90px", "600 40px"].map(f => document.fonts.load(f + " " + FONT))), new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
   const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H;
   const x = c.getContext("2d"), k = byName(p.role);
@@ -631,7 +641,7 @@ async function drawStory(p){
   x.globalCompositeOperation = "source-over";
   // logo
   x.textBaseline = "alphabetic"; x.font = "800 64px " + FONT;
-  const logo = [["Unemployed", CREAM], [".", "#ffc933"], ["Staff", CREAM]];
+  const logo = [["Unemployed", CREAM], [".", YEL], ["Staff", CREAM]];
   let lx = (W - logo.reduce((a, [t]) => a + x.measureText(t).width, 0)) / 2;
   // OY : tout est descendu pour laisser la place à l'horloge de l'écran verrouillé (et rester dans la zone sûre Instagram)
   const OY = 120;
@@ -653,14 +663,14 @@ async function drawStory(p){
   // pastille « Scanne-moi »
   x.save(); x.translate(cx + cw - 150, cy - 2); x.rotate(6 * Math.PI / 180);
   rrect(x, -142 + 6, -38 + 6, 284, 76, 38); x.fillStyle = "#06241d"; x.fill();
-  rrect(x, -142, -38, 284, 76, 38); x.fillStyle = "#ff5a1f"; x.fill(); x.lineWidth = 5; x.strokeStyle = INK; x.stroke();
+  rrect(x, -142, -38, 284, 76, 38); x.fillStyle = ACC; x.fill(); x.lineWidth = 5; x.strokeStyle = INK; x.stroke();
   x.fillStyle = INK; x.font = "800 36px " + FONT; x.textBaseline = "middle"; x.fillText("Scanne-moi ✦", 0, 2);
   x.restore(); x.restore(); x.textBaseline = "alphabetic";
   // accroche + adresse
   const tag = "Du talent à la pelle.", ty = cy + ch + 130; x.font = "800 54px " + FONT;
   const tw = x.measureText(tag).width + 40;
   x.save(); x.translate(W/2, ty - 18); x.rotate(1.2 * Math.PI / 180);
-  rrect(x, -tw/2, -44, tw, 82, 12); x.fillStyle = "#ffc933"; x.fill(); x.fillStyle = INK; x.fillText(tag, 0, 18); x.restore();
+  rrect(x, -tw/2, -44, tw, 82, 12); x.fillStyle = YEL; x.fill(); x.fillStyle = INK; x.fillText(tag, 0, 18); x.restore();
   x.font = "600 30px " + FONT; x.fillStyle = "rgba(255,243,220,.85)"; x.fillText(pageUrl().replace(/^https?:\/\//, "").replace(/\/$/, ""), W/2, ty + 86);
   return new Promise((ok, ko) => c.toBlob(b => b ? ok(b) : ko(new Error("Image impossible")), "image/png"));
 }
@@ -703,9 +713,20 @@ load();
   function apply(t){
     root.setAttribute("data-theme",t);
     var tc=document.getElementById("tc"); if(tc) tc.content = t==="dark" ? "#03231c" : "#06483b";
-    sw.setAttribute("aria-checked", t==="dark" ? "true":"false");
-    sw.setAttribute("aria-label", t==="dark" ? "Apparence sombre (activée) — passer en apparence claire" : "Apparence claire (activée) — passer en apparence sombre");
+    sw.setAttribute("aria-pressed", t==="dark" ? "true":"false");
   }
+  /* Palettes de couleurs */
+  var sws=document.getElementById("sws");
+  function pal(p){
+    if(p==="orange") root.removeAttribute("data-palette"); else root.setAttribute("data-palette",p);
+    if(sws) sws.querySelectorAll(".sw").forEach(function(b){ b.setAttribute("aria-checked", b.getAttribute("data-p")===p ? "true":"false"); });
+  }
+  pal(root.getAttribute("data-palette")||"orange");
+  if(sws) sws.addEventListener("click",function(e){
+    var b=e.target.closest(".sw"); if(!b) return;
+    var p=b.getAttribute("data-p"); pal(p);
+    try{localStorage.setItem("us-pal",p)}catch(x){}
+  });
   apply(root.getAttribute("data-theme")==="dark" ? "dark":"light");
   sw.addEventListener("click",function(){
     var t=root.getAttribute("data-theme")==="dark" ? "light":"dark";
