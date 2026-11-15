@@ -63,8 +63,7 @@ body{margin:0;background:var(--matdeep);color:var(--cream);font-family:"Bricolag
    radial-gradient(120% 90% at 30% 15%,var(--mat),var(--matdeep));
   background:var(--grid)}
 /* Performances : aucun flou, filtre SVG ni mode de fusion calculé en direct (très coûteux sur mobile et en
-   animation). Les rayons de lumière sont des dégradés déjà doux, les ombres de feuilles des images pré-floutées
-   (img/leaf-s1.webp, img/leaf-s2.webp) : les animations ne font que déplacer des calques, le GPU suit sans peine. */
+   animation). Les rayons de lumière sont des dégradés déjà doux : les animations ne font que déplacer des calques, le GPU suit sans peine. */
 .light{position:fixed;inset:-25%;z-index:1;pointer-events:none;will-change:transform;
   /* rayons larges en cloche (montée et descente progressives, sans plateau) : aucun trait net */
   background:repeating-linear-gradient(115deg,rgba(255,196,120,0) 0,rgba(255,196,120,.02) 35px,rgba(255,196,120,.055) 65px,rgba(255,196,120,.07) 85px,rgba(255,196,120,.055) 105px,rgba(255,196,120,.02) 135px,rgba(255,196,120,0) 170px),repeating-linear-gradient(112deg,rgba(255,170,90,0) 0,rgba(255,170,90,.015) 50px,rgba(255,170,90,.04) 95px,rgba(255,170,90,.015) 140px,rgba(255,170,90,0) 190px,rgba(255,170,90,0) 240px);opacity:.7;
@@ -74,15 +73,9 @@ body{margin:0;background:var(--matdeep);color:var(--cream);font-family:"Bricolag
 .glow{z-index:1;pointer-events:none;will-change:opacity;
   background:radial-gradient(60vmax 60vmax at 12% 0%,rgba(255,150,70,.34),transparent 70%),radial-gradient(45vmax 35vmax at 85% 72%,rgba(255,190,110,.12),transparent 70%);
   animation:breathe 9s ease-in-out infinite alternate}
-.shadow{position:fixed;z-index:1;width:95vmax;height:95vmax;pointer-events:none;will-change:transform;background:center/100% 100% no-repeat}  /* opacité (26 %) déjà intégrée aux images */
-.s1{background-image:url(img/leaf-s1.webp)}.s2{background-image:url(img/leaf-s2.webp)}
-.s1{top:-30vmax;right:-28vmax;transform-origin:100% 0;animation:sway1 15s ease-in-out infinite alternate}
-.s2{bottom:-34vmax;left:-30vmax;transform-origin:0 100%;animation:sway2 19s ease-in-out infinite alternate}
 @keyframes drift{from{transform:translate3d(-60px,-20px,0)}to{transform:translate3d(120px,50px,0)}}
 @keyframes breathe{from{opacity:.55}to{opacity:1}}
-@keyframes sway1{from{transform:rotate(-5deg) translate(0,0)}to{transform:rotate(6deg) translate(-2vmax,2vmax)}}
-@keyframes sway2{from{transform:scale(-1,-1) rotate(4deg)}to{transform:scale(-1,-1) rotate(-6deg) translate(2vmax,-1vmax)}}
-@media (prefers-reduced-motion:reduce){.light,.glow,.shadow{animation:none}.step{transition:none}.card{transition:box-shadow 200ms ease}.grid .card:hover{transform:rotate(var(--r,0deg))}}
+@media (prefers-reduced-motion:reduce){.light,.glow{animation:none}.step{transition:none}.card{transition:box-shadow 200ms ease}.grid .card:hover{transform:rotate(var(--r,0deg))}}
 
 .page{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 20px}
 header.top{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
@@ -279,15 +272,13 @@ img.libn{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;
 /* ===== Focus clavier visible, mobile, mouvement réduit ===== */
 :focus-visible{outline:3px solid var(--yel);outline-offset:3px}
 .card :focus-visible,.tools :focus-visible,dialog :focus-visible,details :focus-visible,.pcard :focus-visible,.cta :focus-visible,.step :focus-visible{outline-color:var(--ink)}
-/* Téléphones et tablettes : un seul calque de fond, immobile (halo + ombres de feuilles + tapis réunis),
+/* Téléphones et tablettes : un seul calque de fond, immobile (halo + tapis réunis),
    au lieu de cinq calques plein écran à composer à chaque image du défilement */
 @media (max-width:700px),(pointer:coarse){
-  .light,.glow,.shadow{display:none}
+  .light,.glow{display:none}
   .mat{background:
     radial-gradient(60vmax 60vmax at 12% 0%,rgba(255,150,70,.34),transparent 70%),
     radial-gradient(45vmax 35vmax at 85% 72%,rgba(255,190,110,.12),transparent 70%),
-    url(img/leaf-s1.webp) right -28vmax top -30vmax/95vmax 95vmax no-repeat,
-    url(img/leaf-s2.webp) left -30vmax bottom -34vmax/95vmax 95vmax no-repeat,
     var(--grid)}
 }
 @media (prefers-reduced-motion:reduce){dialog.modal{transform:none}.bmcwrap{transform:none}}
@@ -295,8 +286,6 @@ img.libn{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;
 </head>
 <body>
 <div class="mat"></div>
-<div class="shadow s1" aria-hidden="true"></div>
-<div class="shadow s2" aria-hidden="true"></div>
 <div class="light"></div>
 <div class="glow"></div>
 
