@@ -66,7 +66,8 @@ body{margin:0;background:var(--matdeep);color:var(--cream);font-family:"Bricolag
    animation). Les rayons de lumière sont des dégradés déjà doux, les ombres de feuilles des images pré-floutées
    (img/leaf-s1.webp, img/leaf-s2.webp) : les animations ne font que déplacer des calques, le GPU suit sans peine. */
 .light{position:fixed;inset:-25%;z-index:1;pointer-events:none;will-change:transform;
-  background:repeating-linear-gradient(115deg,transparent 0,rgba(255,196,120,.11) 31px,rgba(255,196,120,.11) 40px,transparent 74px,transparent 104px),repeating-linear-gradient(112deg,transparent 0,rgba(255,170,90,.06) 40px,transparent 96px,transparent 151px);opacity:.7;
+  /* rayons larges en cloche (montée et descente progressives, sans plateau) : aucun trait net */
+  background:repeating-linear-gradient(115deg,rgba(255,196,120,0) 0,rgba(255,196,120,.02) 35px,rgba(255,196,120,.055) 65px,rgba(255,196,120,.07) 85px,rgba(255,196,120,.055) 105px,rgba(255,196,120,.02) 135px,rgba(255,196,120,0) 170px),repeating-linear-gradient(112deg,rgba(255,170,90,0) 0,rgba(255,170,90,.015) 50px,rgba(255,170,90,.04) 95px,rgba(255,170,90,.015) 140px,rgba(255,170,90,0) 190px,rgba(255,170,90,0) 240px);opacity:.7;
   -webkit-mask-image:radial-gradient(ellipse at 25% 12%,#000 0,transparent 68%);
   mask-image:radial-gradient(ellipse at 25% 12%,#000 0,transparent 68%);
   animation:drift 26s ease-in-out infinite alternate}
