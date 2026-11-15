@@ -394,7 +394,31 @@ let PROFILES = [];
 const SOCS = [["instagram","Instagram","IG"],["behance","Behance","Bē"],["linkedin","LinkedIn","in"]];
 const $ = id => document.getElementById(id);
 const plural = new Intl.PluralRules("fr");
-const mail = (s,to) => "mailto:"+(to||EMAIL)+"?subject="+encodeURIComponent(s);
+const mail = (s,to,body) => "mailto:"+(to||EMAIL)+"?subject="+encodeURIComponent(s)+(body ? "&body="+encodeURIComponent(body) : "");
+/* Bouton « Contacter » : mail pré-rempli avec un message et des champs à compléter par l'annonceur */
+const contactMail = p => {
+  const first = String(p.name||"").trim().split(/\s+/)[0] || "", role = String(p.role||"").trim();
+  const body = [
+    "Bonjour" + (first ? " " + first : "") + ",",
+    "",
+    "J’ai découvert ton profil" + (role ? " de " + role.toLowerCase() : "") + " sur Unemployed Staff et j’aimerais échanger avec toi au sujet d’un projet.",
+    "",
+    "Le projet en quelques mots :",
+    "(besoin, délais, budget envisagé…)",
+    "",
+    "",
+    "Mes coordonnées :",
+    "- Nom et prénom : ",
+    "- Entreprise : ",
+    "- Site web ou lien (facultatif) : ",
+    "- Téléphone : ",
+    "- E-mail : ",
+    "",
+    "Au plaisir d’échanger,",
+    ""
+  ].join("\r\n");
+  return mail("Prise de contact : " + p.name + " (via Unemployed Staff)", p.email, body);
+};
 
 $("contactBtn").href = mail("Contact via Unemployed Staff");
 const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -418,7 +442,7 @@ function render(){
       '<div class="role">'+k.e+' '+esc(p.role)+'</div>'+
       '<div class="meta"><span>📍 '+esc(p.city)+'</span><span><i class="dot" style="background:'+(p.dispo?'var(--ok)':'var(--muted)')+'"></i>'+(p.dispo?'Disponible':'Indisponible')+'</span></div>'+
       '<div class="tags">'+p.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div>'+
-      '<div class="actions"><a class="btn o" href="'+mail("Prise de contact : "+p.name+" (via Unemployed Staff)", p.email)+'">Contacter →</a>'+
+      '<div class="actions"><a class="btn o" href="'+contactMail(p)+'">Contacter →</a>'+
       SOCS.filter(s=>p[s[0]]).map(s=>'<a class="soc '+s[0]+'" href="'+esc(p[s[0]])+'" target="_blank" rel="noopener noreferrer" aria-label="'+s[1]+' de '+esc(p.name)+'" title="'+s[1]+'">'+s[2]+'</a>').join("")+'</div></div></article>';
   }).join("") : '<div class="empty">Rien de ce côté-là… essaie un autre mot-clé ou une autre catégorie.</div>';
 }
@@ -460,7 +484,7 @@ function showProfile(p){
     '<div class="meta"><span>📍 '+esc(p.city)+'</span><span><i class="dot" style="background:'+(p.dispo?'var(--ok)':'var(--muted)')+'"></i>'+(p.dispo?'Disponible':'Indisponible')+'</span></div>'+
     '<p class="bio">'+esc(p.bio || "Ce profil n’a pas encore de présentation.")+'</p>'+
     '<div class="tags">'+(p.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div>'+
-    '<div class="actions"><a class="btn o" href="'+mail("Prise de contact : "+p.name+" (via Unemployed Staff)", p.email)+'">Contacter →</a>'+site+
+    '<div class="actions"><a class="btn o" href="'+contactMail(p)+'">Contacter →</a>'+site+
     SOCS.filter(s=>p[s[0]]).map(s=>'<a class="soc '+s[0]+'" href="'+esc(p[s[0]])+'" target="_blank" rel="noopener noreferrer" aria-label="'+s[1]+'" title="'+s[1]+'">'+s[2]+'</a>').join("")+'</div></div></article>'+
     '<section class="bento enter" id="bento" aria-label="Réseaux sociaux et QR code">'+bentoHTML(p)+'</section>';
   document.title = p.name + " · Unemployed.Staff";
