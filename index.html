@@ -507,7 +507,7 @@ function bentoHTML(p){
   }
   out.push('<article class="bx b-qr">'+head("qrb", "QR code", "Scanne pour ouvrir ce profil")+
     '<div class="qr">'+qrSVG(profileUrl(p), "QR code vers le profil de "+p.name)+'</div>'+
-    '<div class="qract"><button type="button" class="btn o" id="dlStory">Télécharger la story ↓</button>'+
+    '<div class="qract"><button type="button" class="btn o" id="dlStory">Télécharger le QR code ↓</button>'+
     (canShareFiles ? '<button type="button" class="btn y" id="shStory">Partager</button>' : '')+
     '<button type="button" class="btn" id="cpLink">Copier le lien</button></div>'+
     '<p class="qrtxt">Image 1080 × 1920 : en fond d’écran ou dans ta story Instagram.</p></article>');
