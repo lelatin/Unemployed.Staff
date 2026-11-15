@@ -8,7 +8,7 @@ What is Unemployed Staff? A directory of freelancers born between friends, in Mo
 
 ## Pour l’admin : aperçus des réseaux sur la page profil
 
-Chaque page profil (`#profil-prenom-nom`) affiche une grille « bento » : Instagram, LinkedIn, Behance (si le lien existe) et un QR code vers le profil, avec un bouton pour télécharger une image story 1080 × 1920.
+Chaque page profil (`#profil-prenom-nom`) affiche une grille « bento » : Instagram, LinkedIn, Behance (si le lien existe) et un QR code vers le profil, avec un bouton pour télécharger une image QR code au format téléphone (1290 × 2796).
 
 **Instagram en direct :** si le lien Instagram du profil contient un pseudo (ex. `https://www.instagram.com/studio.lelatin/`), la case affiche un bouton « Afficher l’aperçu en direct ». Au clic, l’aperçu officiel du profil (photo, abonnés, derniers posts) se charge et se met à jour tout seul. Il ne se charge qu’après un clic, à cause des cookies d’Instagram. Cette page d’aperçu n’est pas documentée par Instagram : si elle disparaît un jour, les cases ci-dessous restent affichées.
 

@@ -510,7 +510,7 @@ function bentoHTML(p){
     '<div class="qract"><button type="button" class="btn o" id="dlStory">Télécharger le QR code ↓</button>'+
     (canShareFiles ? '<button type="button" class="btn y" id="shStory">Partager</button>' : '')+
     '<button type="button" class="btn" id="cpLink">Copier le lien</button></div>'+
-    '<p class="qrtxt">Image 1080 × 1920 : en fond d’écran ou dans ta story Instagram.</p></article>');
+    '<p class="qrtxt">Image au format téléphone : en fond d’écran ou dans ta story Instagram.</p></article>');
   return out.map((h, i) => h.replace('<article class="bx', '<article style="--i:'+i+'" class="bx')).join("");
 }
 
@@ -614,7 +614,7 @@ function qrSVG(text, label){
   return '<svg viewBox="0 0 '+q+' '+q+'" role="img" aria-label="'+esc(label)+'" shape-rendering="crispEdges"><rect width="'+q+'" height="'+q+'" fill="#fff3dc"/><path d="'+d+'" fill="#17140f"/></svg>';
 }
 
-/* ===== Image story 1080 × 1920 (9:16) avec le tapis de découpe ===== */
+/* ===== Image QR code 1290 × 2796 (format téléphone) avec le tapis de découpe ===== */
 const storyCache = new Map();
 function storyFor(p){ const s = slugFor(p) + ":" + (document.documentElement.getAttribute("data-palette") || "orange"); if (!storyCache.has(s)) storyCache.set(s, drawStory(p)); return storyCache.get(s); }
 function rrect(x, X, Y, w, h, r){ x.beginPath(); x.moveTo(X+r, Y); x.arcTo(X+w, Y, X+w, Y+h, r); x.arcTo(X+w, Y+h, X, Y+h, r); x.arcTo(X, Y+h, X, Y, r); x.arcTo(X, Y, X+w, Y, r); x.closePath(); }
@@ -622,22 +622,29 @@ async function drawStory(p){
   const FONT = '"Bricolage Grotesque",system-ui,sans-serif', INK = "#17140f", PAPER = "#fff3dc", CREAM = "#fff3dc";
   const cs = getComputedStyle(document.documentElement), ACC = cs.getPropertyValue("--accent").trim() || "#ff5a1f", YEL = cs.getPropertyValue("--yel").trim() || "#ffc933";
   try { await Promise.race([Promise.all(["800 90px", "600 40px"].map(f => document.fonts.load(f + " " + FONT))), new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
-  const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H;
+  // Image au format écran de téléphone (1290 × 2796). La composition (logo, carte, accroche) est dessinée
+  // dans un cadre de 1080 × 1920 réduit à ~94 %, centré et descendu : marges autour pour que rien ne soit
+  // rogné en fond d'écran, et l'horloge de l'écran verrouillé tombe au-dessus du logo.
+  const W = 1080, H = 1920, CW = 1290, CH = 2796, S = CW / 1375, PX = (CW / S - W) / 2, PY = 696;
+  const c = document.createElement("canvas"); c.width = CW; c.height = CH;
   const x = c.getContext("2d"), k = byName(p.role);
-  // tapis de découpe : dégradé, quadrillage fin + fort, diagonales
-  const g = x.createRadialGradient(W*.3, H*.15, 0, W*.3, H*.15, H*1.05); g.addColorStop(0, "#0b6b57"); g.addColorStop(1, "#06483b");
-  x.fillStyle = g; x.fillRect(0, 0, W, H);
-  x.fillStyle = "rgba(255,255,255,.14)"; for (let i = 0; i <= W; i += 48) x.fillRect(i, 0, 2, H); for (let j = 0; j <= H; j += 48) x.fillRect(0, j, W, 2);
-  x.fillStyle = "rgba(255,255,255,.28)"; for (let i = 0; i <= W; i += 240) x.fillRect(i - 1, 0, 4, H); for (let j = 0; j <= H; j += 240) x.fillRect(0, j - 1, W, 4);
+  x.scale(S, S); x.translate(PX, PY);
+  const X0 = -PX, Y0 = -PY, X1 = CW / S - PX, Y1 = CH / S - PY, VW = X1 - X0, VH = Y1 - Y0;  // toute la surface, en unités de la composition
+  // tapis de découpe : dégradé, quadrillage fin + fort, diagonales (calé sur la composition, étendu jusqu'aux bords)
+  const g = x.createRadialGradient(X0 + VW*.3, Y0 + VH*.15, 0, X0 + VW*.3, Y0 + VH*.15, VH*1.05); g.addColorStop(0, "#0b6b57"); g.addColorStop(1, "#06483b");
+  x.fillStyle = g; x.fillRect(X0, Y0, VW, VH);
+  const from = (v, step) => Math.ceil(v / step) * step;
+  x.fillStyle = "rgba(255,255,255,.14)"; for (let i = from(X0, 48); i <= X1; i += 48) x.fillRect(i, Y0, 2, VH); for (let j = from(Y0, 48); j <= Y1; j += 48) x.fillRect(X0, j, VW, 2);
+  x.fillStyle = "rgba(255,255,255,.28)"; for (let i = from(X0, 240); i <= X1; i += 240) x.fillRect(i - 1, Y0, 4, VH); for (let j = from(Y0, 240); j <= Y1; j += 240) x.fillRect(X0, j - 1, VW, 4);
   x.strokeStyle = "rgba(255,214,90,.28)"; x.lineWidth = 3;
-  for (let s = -H; s < W; s += 960) { x.beginPath(); x.moveTo(s, H); x.lineTo(s + H, 0); x.stroke(); }
+  for (let d = from(X0 + Y0, 960); d <= X1 + Y1; d += 960) { x.beginPath(); x.moveTo(d - Y1, Y1); x.lineTo(d - Y0, Y0); x.stroke(); }
   x.fillStyle = "rgba(255,243,220,.5)"; x.font = "600 22px " + FONT; x.textBaseline = "top";
-  for (let i = 240, n = 5; i < W; i += 240, n += 5) x.fillText(String(n), i + 8, 10);
-  for (let j = 240, n = 5; j < H; j += 240, n += 5) x.fillText(String(n), 10, j + 8);
+  for (let i = from(X0 + 40, 240), n = 5; i < X1; i += 240, n += 5) x.fillText(String(n), i + 8, Y0 + 10);
+  for (let j = from(Y0 + 40, 240), n = 5; j < Y1; j += 240, n += 5) x.fillText(String(n), X0 + 10, j + 8);
   // lumière chaude
   x.globalCompositeOperation = "screen";
-  [[W*.12, 0, H*.7, "255,150,70", .42], [W*.85, H*.72, H*.4, "255,190,110", .16]].forEach(([gx, gy, r, rgb, a]) => {
-    const l = x.createRadialGradient(gx, gy, 0, gx, gy, r); l.addColorStop(0, "rgba("+rgb+","+a+")"); l.addColorStop(1, "rgba("+rgb+",0)"); x.fillStyle = l; x.fillRect(0, 0, W, H); });
+  [[X0 + VW*.12, Y0, VH*.7, "255,150,70", .42], [X0 + VW*.85, Y0 + VH*.72, VH*.4, "255,190,110", .16]].forEach(([gx, gy, r, rgb, a]) => {
+    const l = x.createRadialGradient(gx, gy, 0, gx, gy, r); l.addColorStop(0, "rgba("+rgb+","+a+")"); l.addColorStop(1, "rgba("+rgb+",0)"); x.fillStyle = l; x.fillRect(X0, Y0, VW, VH); });
   x.globalCompositeOperation = "source-over";
   // logo
   x.textBaseline = "alphabetic"; x.font = "800 64px " + FONT;
