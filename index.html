@@ -58,15 +58,19 @@ body{margin:0;background:var(--matdeep);color:var(--cream);font-family:"Bricolag
    linear-gradient(90deg,rgba(255,255,255,.28) 2px,transparent 2px) 0 0/120px 120px,
    linear-gradient(45deg,transparent calc(50% - 1px),rgba(255,214,90,.28) 50%,transparent calc(50% + 1px)) 0 0/480px 480px,
    radial-gradient(120% 90% at 30% 15%,var(--mat),var(--matdeep))}
-.light{position:fixed;inset:-25%;z-index:1;pointer-events:none;mix-blend-mode:screen;
-  background:repeating-linear-gradient(115deg,transparent 0,rgba(255,196,120,.26) 22px,rgba(255,196,120,.26) 40px,transparent 70px,transparent 104px),repeating-linear-gradient(112deg,transparent 0,rgba(255,170,90,.14) 30px,transparent 80px,transparent 151px);filter:blur(30px);opacity:.7;
+/* Performances : aucun flou, filtre SVG ni mode de fusion calculé en direct (très coûteux sur mobile et en
+   animation). Les rayons de lumière sont des dégradés déjà doux, les ombres de feuilles des images pré-floutées
+   (img/leaf-s1.webp, img/leaf-s2.webp) : les animations ne font que déplacer des calques, le GPU suit sans peine. */
+.light{position:fixed;inset:-25%;z-index:1;pointer-events:none;will-change:transform;
+  background:repeating-linear-gradient(115deg,transparent 0,rgba(255,196,120,.11) 31px,rgba(255,196,120,.11) 40px,transparent 74px,transparent 104px),repeating-linear-gradient(112deg,transparent 0,rgba(255,170,90,.06) 40px,transparent 96px,transparent 151px);opacity:.7;
   -webkit-mask-image:radial-gradient(ellipse at 25% 12%,#000 0,transparent 68%);
   mask-image:radial-gradient(ellipse at 25% 12%,#000 0,transparent 68%);
   animation:drift 26s ease-in-out infinite alternate}
-.glow{position:fixed;inset:0;z-index:1;pointer-events:none;mix-blend-mode:screen;
-  background:radial-gradient(60vmax 60vmax at 12% 0%,rgba(255,150,70,.42),transparent 70%),radial-gradient(45vmax 35vmax at 85% 72%,rgba(255,190,110,.16),transparent 70%);
+.glow{position:fixed;inset:0;z-index:1;pointer-events:none;will-change:opacity;
+  background:radial-gradient(60vmax 60vmax at 12% 0%,rgba(255,150,70,.34),transparent 70%),radial-gradient(45vmax 35vmax at 85% 72%,rgba(255,190,110,.12),transparent 70%);
   animation:breathe 9s ease-in-out infinite alternate}
-.shadow{position:fixed;z-index:1;width:95vmax;height:95vmax;pointer-events:none;filter:blur(7px);opacity:.26}
+.shadow{position:fixed;z-index:1;width:95vmax;height:95vmax;pointer-events:none;opacity:.26;will-change:transform;background:center/100% 100% no-repeat}
+.s1{background-image:url(img/leaf-s1.webp)}.s2{background-image:url(img/leaf-s2.webp)}
 .s1{top:-30vmax;right:-28vmax;transform-origin:100% 0;animation:sway1 15s ease-in-out infinite alternate}
 .s2{bottom:-34vmax;left:-30vmax;transform-origin:0 100%;animation:sway2 19s ease-in-out infinite alternate}
 @keyframes drift{from{transform:translate3d(-60px,-20px,0)}to{transform:translate3d(120px,50px,0)}}
@@ -276,8 +280,8 @@ img.libn{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;
 </head>
 <body>
 <div class="mat"></div>
-<svg class="shadow s1" viewBox="0 0 800 800" aria-hidden="true"><defs><filter id="soft" x="-25%" y="-25%" width="150%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="80"/><feGaussianBlur stdDeviation="24"/></filter></defs><g fill="#02150f" filter="url(#soft)"><path d="M780 20C640 200 560 380 520 800" stroke="#000" stroke-width="12" fill="none"/><ellipse cx="640" cy="200" rx="170" ry="62" transform="rotate(35 640 200)"/><ellipse cx="560" cy="330" rx="190" ry="66" transform="rotate(-25 560 330)"/><ellipse cx="610" cy="470" rx="180" ry="62" transform="rotate(40 610 470)"/><ellipse cx="500" cy="560" rx="190" ry="64" transform="rotate(-30 500 560)"/><ellipse cx="520" cy="700" rx="160" ry="56" transform="rotate(30 520 700)"/><ellipse cx="760" cy="330" rx="140" ry="50" transform="rotate(70 760 330)"/></g></svg>
-<svg class="shadow s2" viewBox="0 0 800 800" aria-hidden="true"><g fill="#02150f" filter="url(#soft)"><path d="M780 20C660 220 600 420 560 800" stroke="#000" stroke-width="12" fill="none"/><ellipse cx="660" cy="220" rx="180" ry="64" transform="rotate(30 660 220)"/><ellipse cx="590" cy="360" rx="190" ry="66" transform="rotate(-30 590 360)"/><ellipse cx="640" cy="520" rx="180" ry="60" transform="rotate(35 640 520)"/><ellipse cx="560" cy="660" rx="170" ry="58" transform="rotate(-28 560 660)"/></g></svg>
+<div class="shadow s1" aria-hidden="true"></div>
+<div class="shadow s2" aria-hidden="true"></div>
 <div class="light"></div>
 <div class="glow"></div>
 
@@ -529,7 +533,9 @@ function wireIG(p){
 function wireQR(p){
   wireIG(p);
   const file = "unemployed-staff-" + slugFor(p).replace(/^profil-/, "") + ".png";
-  storyFor(p);                                                 // préparée dès l’ouverture : le partage reste instantané (recalculée si la palette change)
+  // préparée en arrière-plan une fois la page affichée (partage instantané ensuite), sans ralentir l’ouverture du profil
+  const idle = window.requestIdleCallback || (f => setTimeout(f, 800));
+  idle(() => { if (location.hash === "#" + slugFor(p)) storyFor(p); }, {timeout: 2500});
   $("dlStory").onclick = async e => {
     const b = e.currentTarget, label = b.textContent; b.disabled = true; b.textContent = "Préparation…";
     try {
