@@ -417,7 +417,9 @@ const contactMail = p => {
     "Au plaisir d’échanger,",
     ""
   ].join("\r\n");
-  return mail("Prise de contact : " + p.name + " (via Unemployed Staff)", p.email, body);
+  // destinataire : l'adresse du freelance s'il l'a renseignée, sinon aucun (jamais la boîte Unemployed Staff)
+  const to = String(p.email||"").trim();
+  return "mailto:" + encodeURIComponent(to).replace(/%40/g, "@") + "?subject=" + encodeURIComponent("Prise de contact : " + p.name + " (via Unemployed Staff)") + "&body=" + encodeURIComponent(body);
 };
 
 $("contactBtn").href = mail("Contact via Unemployed Staff");
