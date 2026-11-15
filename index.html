@@ -77,7 +77,7 @@ body{margin:0;background:var(--matdeep);color:var(--cream);font-family:"Bricolag
 
 .page{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 20px}
 header.top{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
-.logo{font-weight:800;font-size:1.2rem;letter-spacing:-.03em}
+.logo{font-weight:800;font-size:1.2rem;letter-spacing:-.03em;color:inherit;text-decoration:none}
 .logo b{color:var(--yel)}
 .btn{display:inline-block;padding:11px 18px;border-radius:999px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);text-decoration:none;font-weight:600;font-size:.92rem;box-shadow:3px 3px 0 var(--hard);transition:transform 160ms var(--ease-out),box-shadow 160ms var(--ease-out);cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 @media (hover:hover) and (pointer:fine){.btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--hard)}}
@@ -282,8 +282,8 @@ img.libn{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;
 <div class="glow"></div>
 
 <div class="page">
-  <header class="top">
-    <div class="logo">Unemployed<b>.</b>Staff</div>
+  <header class="top" id="top">
+    <a class="logo" href="#top" title="Retour à l’accueil">Unemployed<b>.</b>Staff</a>
     <div class="hactions">
       <a class="btn y" id="joinTop" href="#">Rejoindre l’annuaire</a>
       <div class="ctrl">
@@ -678,7 +678,7 @@ function route(){
   const h = location.hash.slice(1), p = h.indexOf("profil-") === 0 ? PROFILES.find(x => slugFor(x) === h) : null;
   document.body.classList.toggle("is-profile", !!p); $("profile").hidden = !p;
   if (p) { showProfile(p); window.scrollTo(0,0); }
-  else { document.title = "Unemployed.Staff"; if (h === "annuaire") setTimeout(() => $("annuaire").scrollIntoView(), 0); }
+  else { document.title = "Unemployed.Staff"; if (h === "annuaire") setTimeout(() => $("annuaire").scrollIntoView(), 0); else if (h === "top") window.scrollTo(0,0); }
 }
 async function load(){
   try {
@@ -703,6 +703,7 @@ async function load(){
   buildSugg(); render(); route();
 }
 window.addEventListener("hashchange", route);
+document.querySelector("a.logo").addEventListener("click", e => { if (location.hash === "#top") { e.preventDefault(); window.scrollTo(0,0); } });  // déjà sur #top : pas de hashchange, on remonte quand même
 load();
 </script>
 <script>
