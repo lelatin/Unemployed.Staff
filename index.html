@@ -96,6 +96,18 @@ mark.y{background:var(--yel);transform:rotate(1.2deg)}
 .about b{color:var(--accent)}
 .stamp{position:absolute;right:0;bottom:24px;font-size:.7rem;letter-spacing:.2em;font-weight:800;border:2px dashed var(--cream);border-radius:999px;padding:8px 14px;transform:rotate(8deg);opacity:.8}
 @media(max-width:1000px){.stamp{display:none}}
+.seal{position:absolute;right:36px;bottom:92px;width:170px;aspect-ratio:1;display:block;color:var(--cream);border-radius:50%;transition:transform 300ms var(--ease-out)}
+.seal svg{display:block;width:100%;height:100%;overflow:visible;animation:sealspin 30s linear infinite}
+.seal text{font:800 19px "Bricolage Grotesque",system-ui,sans-serif;fill:currentColor}
+.seal .sring circle{fill:currentColor}
+.seal .sline{fill:none;stroke:currentColor;stroke-width:3.5}
+.seal .sdot{fill:var(--yel)}
+@media (hover:hover) and (pointer:fine){.seal:hover{transform:scale(1.06) rotate(-6deg)}}
+.seal:focus-visible{outline:3px solid var(--yel);outline-offset:6px}
+@keyframes sealspin{to{transform:rotate(1turn)}}
+@media(max-width:1000px){.seal{width:120px;right:4px;bottom:84px}}
+@media(max-width:640px){.seal{width:80px;right:0;bottom:4px}}
+@media (prefers-reduced-motion:reduce){.seal svg{animation:none}.seal{transition:none}}
 
 h2.t{font-size:clamp(1.7rem,5vw,2.8rem);letter-spacing:-.035em;margin:44px 0 16px;font-weight:800}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
@@ -310,6 +322,7 @@ img.libn{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;
   <div class="home" id="home">
   <section class="hero">
     <div class="stamp">CUTTING MAT · 30 CM</div>
+    <a class="seal" href="#annuaire" aria-label="Unemployed Staff, freelances à Montpellier : voir l’annuaire"><svg viewBox="-100 -100 200 200" aria-hidden="true" focusable="false"><g class="sring"><path id="sealTop" d="M-80 0A80 80 0 0 1 80 0" fill="none"/><path id="sealBot" d="M-92.54 0A92.54 92.54 0 0 0 92.54 0" fill="none"/><text><textPath href="#sealTop" startOffset="50%" text-anchor="middle" textLength="167.5" lengthAdjust="spacing">UNEMPLOYED STAFF</textPath></text><text><textPath href="#sealBot" startOffset="50%" text-anchor="middle" textLength="281.8" lengthAdjust="spacing">FREELANCES À MONTPELLIER</textPath></text><circle cx="83.84" cy="-20.33" r="3.23"/><circle cx="-83.84" cy="-20.33" r="3.23"/></g><circle class="sline" r="63"/><circle class="sdot" r="45"/></svg></a>
     <h1>Des freelances <mark>dispos</mark>.<br>Du talent <mark class="y">à la pelle.</mark></h1>
     <div class="about"><b>Unemployed Staff c’est quoi ?</b> Un annuaire de freelances à Montpellier. Beaucoup de talents, peu de visibilité : alors voici donc l’annuaire pour les trouver et leur écrire.</div>
     <a class="btn o" href="#annuaire">Voir les profils ↓</a>
